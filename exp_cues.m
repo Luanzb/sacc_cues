@@ -1,4 +1,4 @@
-function [timestamps,Response] = exp_sacadas_expressas(g,infos, aperture, disctexture, participant)
+function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, participant)
 
     FlushEvents;
     ListenChar(2);

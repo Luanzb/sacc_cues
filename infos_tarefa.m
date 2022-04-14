@@ -330,7 +330,7 @@ matrix = infos.matrix(1:640,:);
 [g]           = gabor(infos);
 [aperture]    = FastMaskedNoiseDemo(infos, g);
 [disctexture] = disc(infos);
-[timestamps,Response]    = exp_sacadas_expressas(g,infos, aperture, disctexture, participant);
+[timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
 
 participant.eyefilename = 'express.edf'; 
 participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
