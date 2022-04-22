@@ -1,6 +1,6 @@
-function [timestamps,Response] = exp_cues_staircases(g, infos, aperture, disctexture, participant)
+function [timestamps,Response] = exp_cues_stair(g, infos, aperture, disctexture, participant)
 
-    participant.method = input('1-up/1-down (1), 1-up/2-down (2), 1-up/3-down (3), Psi (4), Pest (5)');
+%     participant.method = input('1-up/1-down (1), 1-up/2-down (2), 1-up/3-down (3), Psi (4), Pest (5)');
     
     FlushEvents;
     ListenChar(2);
@@ -87,33 +87,33 @@ function [timestamps,Response] = exp_cues_staircases(g, infos, aperture, disctex
     if participant.method == 1  % 1-up/1-down
         
         UD1(1:4) = PAL_AMUD_setupUD('up',1,'down',1,...
-            'StepSizeDown',infos.UD_step_size_down,...
-            'StepSizeUp',infos.UD_step_size_up,...
-            'stopcriterion',infos.stop_criterion,...
-            'stoprule',infos.stop_rule,...
-            'startvalue',infos.UD_start_value,...
+            'stepSizeDown',infos.UD_step_size_down,...
+            'stepSizeUp',infos.UD_step_size_up,...
+            'stopCriterion',infos.UD_stop_criterion,...
+            'stopRule',infos.UD_stop_rule,...
+            'startValue',infos.UD_start_value,...
             'xMax',infos.UD_xmax,...
             'xMin',infos.UD_xmin);
         
     elseif participant.method == 2  % 1-up/2-down
         
         UD2(1:4) = PAL_AMUD_setupUD('up',1,'down',2,...
-            'StepSizeDown',infos.UD_step_size_down,...
-            'StepSizeUp',infos.UD_step_size_up,...
-            'stopcriterion',infos.stop_criterion,...
-            'stoprule',infos.stop_rule,...
-            'startvalue',infos.UD_start_value,...
+            'stepSizeDown',infos.UD_step_size_down,...
+            'stepSizeUp',infos.UD_step_size_up,...
+            'stopCriterion',infos.UD_stop_criterion,...
+            'stopRule',infos.UD_stop_rule,...
+            'startValue',infos.UD_start_value,...
             'xMax',infos.UD_xmax,...
             'xMin',infos.UD_xmin);
         
     elseif participant.method == 3  % 1-up/3-down
         
         UD3(1:4) = PAL_AMUD_setupUD('up',1,'down',3,...
-            'StepSizeDown',infos.UD_step_size_down,...
-            'StepSizeUp',infos.UD_step_size_up,...
-            'stopcriterion',infos.stop_criterion,...
-            'stoprule',infos.stop_rule,...
-            'startvalue',infos.UD_start_value,...
+            'stepSizeDown',infos.UD_step_size_down,...
+            'stepSizeUp',infos.UD_step_size_up,...
+            'stopCriterion',infos.UD_stop_criterion,...
+            'stopRule',infos.UD_stop_rule,...
+            'startValue',infos.UD_start_value,...
             'xMax',infos.UD_xmax,...
             'xMin',infos.UD_xmin);
     
@@ -123,7 +123,7 @@ function [timestamps,Response] = exp_cues_staircases(g, infos, aperture, disctex
             'priorBetaRange',infos.PSI_prior_beta_range,...
             'priorGammaRange',infos.PSI_prior_gamma,...
             'priorLambdaRange',infos.PSI_prior_lambda,...
-            'numTrials',infos.PSI_ntrials_cond,...
+            'numTrials',infos.PSI_stop_rule,...
             'PF',infos.PSI_PF,...
             'stimRange',infos.PSI_stim_range,...
             'marginalize',infos.PSI_marginalize);   % marginal parameters (1: threshold, 2: slope, 3: guess, 4: lapse) 
@@ -152,7 +152,7 @@ for q = 1:infos.ntrials
     % define stimuli in this trial
     curr_cond = infos.trials(q,1); % condition number
     curr_cue_type = infos.trials(q,2); % type of cue (1=central; 2=peri)
-    curr_cue_size = infos.trials(a,3); % cue size
+    curr_cue_size = infos.trials(q,3); % cue size
     curr_tg_type = infos.trials(q,4); % direction of target (1=clockwise;2=counterclock)
    
     if participant.method == 1
@@ -162,9 +162,9 @@ for q = 1:infos.ntrials
     elseif participant.method == 3
         curr_ori = UD3(curr_cond).xCurrent;
     elseif participant.method == 4
-        curr_ori = PM(curr_cond).xCurrent;
+        curr_ori = PSI(curr_cond).xCurrent;
     elseif participant.method == 5
-        curr_ori = RF(curr_cond).xCurrent;
+        curr_ori = PEST(curr_cond).xCurrent;
     end
     
     if curr_tg_type == 2  % counterclockwise conditions
@@ -172,12 +172,12 @@ for q = 1:infos.ntrials
     end
 
     dotsize = repmat(infos.dotSize,infos.nrows,2);
-    dotsize(infos.cue_onoff(q,1):infos.cue_onoff(q,2),1) = curr_cue_size;
-%     dotsize(infos.cue_onoff(q,1):infos.cue_onoff(q,2),2) = infos.rightcuesize(q); 
+%     dotsize(infos.cue_onoff(q,1):infos.cue_onoff(q,2),1) = curr_cue_size; % left
+    dotsize(infos.cue_onoff(q,1):infos.cue_onoff(q,2),2) = curr_cue_size; % right
     
     orient = repmat(infos.orientation,infos.nrows,2);
-    orient(infos.SOA(q,1):infos.SOA(q,4),1) = curr_ori;
-%     orient(infos.SOA(q,1):infos.SOA(q,4),2) = infos.orienttarget(q,2);
+%     orient(infos.SOA(q,1):infos.SOA(q,4),1) = curr_ori; % left
+    orient(infos.SOA(q,1):infos.SOA(q,4),2) = curr_ori; % right
     
     dclear = zeros(infos.nrows,1);
     dclear(infos.startgap(q)) = 1;
@@ -255,7 +255,7 @@ for q = 1:infos.ntrials
     Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoord,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     [~, timestamps.fix_on(q)] = Screen('Flip', infos.win);
 
     %%
@@ -290,7 +290,7 @@ for q = 1:infos.ntrials
     Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoord,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     [timestamps.start_trial(q)] = Screen('Flip', infos.win, timestamps.fix_on(q));
     Eyelink('Message', sprintf('array_on_%1d', q));       
     Eyelink('Command', 'record_status_message "TRIAL %d', q);
@@ -301,48 +301,49 @@ for q = 1:infos.ntrials
              
         % 1 segundo apresenta��o placeholders, pf, noise/gabor
         texL = Screen('MakeTexture',infos.win,noise(b,1).noiseimg,[],infos.flags);
-
+        texR = Screen('MakeTexture',infos.win,noise(b,2).noiseimg,[],infos.flags);
+        
         % Pista central
         if curr_cue_type == 1
 %             if infos.matrix(q,2) == 1
-                Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter, ...
-                infos.xcenter - 26,infos.ycenter, 4);
+%                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter, ...
+%                 infos.xcenter - 26,infos.ycenter, 4);
 %             else
-%                  Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
-%                 ,infos.xcenter + 26,infos.ycenter, 4);
+                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
+                ,infos.xcenter + 26,infos.ycenter, 4);
 %             end
         end
         
         if infos.show_noise_gabor(b) == 1
             
-            if orient(b,1) == 0 
+            if orient(b,2) == 0 
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                orient(b,1),infos.filtmode,infos.galpha, [], [],...
+                Screen('DrawTextures', infos.win, texR, [],infos.coordR,...
+                orient(b,2),infos.filtmode,infos.galpha, [], [],...
                 kPsychDontDoRotation, g.propertiesMat');
                 Screen('DrawTextures', infos.win,[aperture disctexture],...
-                [], infos.coordL, [], 0, [],infos.grey);
+                [], infos.coordR, [], 0, [],infos.grey);
             
             else % apresenta alvo no lado esquerdo
-                texL = g.gabortex;
+                texR = g.gabortex;
                 Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-                Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                orient(b,1),0,1,[],[],kPsychDontDoRotation, g.propertiesMat');
+                Screen('DrawTextures', infos.win, texR, [],infos.coordR,...
+                orient(b,2),0,1,[],[],kPsychDontDoRotation, g.propertiesMat');
             end  
                  
         else % apresenta gabor se b for 0
-            texL = g.gabortex;
+            texR = g.gabortex;
             Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-            Screen('DrawTextures', infos.win, texL, [], infos.coordL,...
-            orient(b,1),0,1,[],[], kPsychDontDoRotation, g.propertiesMat');
+            Screen('DrawTextures', infos.win, texR, [], infos.coordR,...
+            orient(b,2),0,1,[],[], kPsychDontDoRotation, g.propertiesMat');
         
         end
                 
         Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
         Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,fp(b),[],2);
-        Screen('DrawDots', infos.win, infos.pholdercoordL, dotsize(b,1),...
-        infos.pholdercolor, [], 2, 1);
+%         Screen('DrawDots', infos.win, infos.pholdercoordL, dotsize(b,1),...
+%         infos.pholdercolor, [], 2, 1);
         Screen('DrawDots', infos.win, infos.pholdercoordR, dotsize(b,2),...
         infos.pholdercolor, [], 2, 1);
        
@@ -376,9 +377,9 @@ for q = 1:infos.ntrials
     % sua resposta.
     
 %         if infos.matrix(q,2) == 1 % alvo e pista na esquerda
-            fix_window_targ = infos.coordL';
+%             fix_window_targ = infos.coordL';
 %         else                      % alvo e pista na direita
-%             fix_window_targ = infos.coordR';
+            fix_window_targ = infos.coordR';
 %         end
 
             while 1
@@ -402,7 +403,7 @@ for q = 1:infos.ntrials
     % Desenha os placeholders e pf na tela
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoord,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('Flip', infos.win);
     
     if participant.giveresp == true

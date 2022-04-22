@@ -24,10 +24,10 @@ Screen('Preference', 'SkipSyncTests', 1); %
 Screen('Preference', 'TextRenderer');
 Screen('Preference', 'Verbosity', 0);
 
-infos.ntrials              = 640; % n�mero de tentativas
+infos.ntrials              = 28; % n�mero de tentativas
 infos.screen_num           = 0;
-infos.pausas               = (160:160:800); % 5 pausas em uma sessão (5:5:25);%
-infos.pausas2              = (161:160:801);  % (6:5:26);%
+infos.pausas               = (5:5:25);%(160:160:800); % 5 pausas em uma sessão 
+infos.pausas2              = (6:5:26);%(161:160:801);  % 
 infos.time                 = [0.025  0.5  1  0  0.0167]; 
 infos.fix_dur_t            = 0.3;  % Duration of fixation at ROI to start trial in secs
 infos.screenNumber         = max(Screen('Screens'));
@@ -272,19 +272,19 @@ for q = 1:infos.ntrials
         % alvo na esquerda
         if infos.matrix(q,2) == 1
             if infos.matrix(q,3) == 1 % define orient do alvo
-                 infos.orienttarget(q,1) = 7; % 45;
+                 infos.orienttarget(q,1) = 45;
                  infos.orienttarget(q,2) = 0; 
             else
-                 infos.orienttarget(q,1) = 353;   % 315;
+                 infos.orienttarget(q,1) = 315;
                  infos.orienttarget(q,2) = 0; 
             end  
         else %alvo na direita  
             if infos.matrix(q,3) == 1 % define orient do alvo
                  infos.orienttarget(q,1) = 0;
-                 infos.orienttarget(q,2) =  7;  % 45; 
+                 infos.orienttarget(q,2) = 45; 
             else
                  infos.orienttarget(q,1) = 0;
-                 infos.orienttarget(q,2) = 353;  % 315; 
+                 infos.orienttarget(q,2) = 315; 
             end
         end
      
@@ -298,10 +298,10 @@ for q = 1:infos.ntrials
             infos.pista_esquerda(q) = 1;
             
             if infos.matrix(q,3) == 1
-                 infos.orienttarget(q,1) = 7;  %45;
+                 infos.orienttarget(q,1) = 45;
                  infos.orienttarget(q,2) = 0; 
             else
-                 infos.orienttarget(q,1) = 353;  % 315;
+                 infos.orienttarget(q,1) = 315;
                  infos.orienttarget(q,2) = 0; 
             end
         % pista e alvo na direita
@@ -312,10 +312,10 @@ for q = 1:infos.ntrials
             
            if infos.matrix(q,3) == 1
                  infos.orienttarget(q,1) = 0;
-                 infos.orienttarget(q,2) = 7;  % 45; 
+                 infos.orienttarget(q,2) = 45; 
            else
                  infos.orienttarget(q,1) = 0;
-                 infos.orienttarget(q,2) = 353;  % 315; 
+                 infos.orienttarget(q,2) = 315; 
            end
         end
         

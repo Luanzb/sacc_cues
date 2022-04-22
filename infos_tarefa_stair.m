@@ -1,9 +1,15 @@
 sca; close all; clear;
 PsychDefaultSetup(2);
 
+cd /home/activis/Documents/GitHub/sacc_cues/
+addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
+addpath(genpath('/home/activis/Documents/MATLAB/'))   
+
 infos = struct;
 
 [participant] = inputsubject;
+
+% participant.method = input('staircase method: 1-up/1-down (1), 1-up/2-down (2), 1-up/3-down (3), Psi (4) or Pest (5)?\n');
 
 %%
 %                      INFORMAÇÕES SOBRE O TECLADO
@@ -69,10 +75,8 @@ dva6     = 0.6;       % ponto de fixacao externo em preto
 [a5]     = dva2pix(dist, height, res2, dva5);
 [a6]     = dva2pix(dist, width,  res,  dva6);
 
-
 infos.roi_fixwinsize_dva = 4; % Set fixation ROI
 infos.roi_fixwinsize_pix = dva2pix(dist,width,res,infos.roi_fixwinsize_dva);
-
 
 % define posição de apresentação dos estímulos
 rectt        = [0 0 a1 a1];
@@ -97,8 +101,7 @@ infos.pholdercoord  = [x,  x,  x2, x2
                        y2, y1, y2, y1];  % coord placeholders.
 infos.pholdercoordL = [x,  x;  y2, y1];  % coordenadas pista lado esquerdo
 infos.pholdercoordR = [x2, x2; y2, y1];  % coord pista lado direito
-                    
-          
+                          
 %%
                   % CONF. GERAIS PARA PISTA, ALVO NOISE E SOA
 %%
@@ -320,13 +323,13 @@ infos.UD_stop_criterion = 'trials';
 infos.UD_stop_rule = infos.ntrials_staircase;
 infos.UD_start_value = 45;
 infos.UD_xmax = 90;
-infod.UD_xmin = 0;
+infos.UD_xmin = 0;
 
 grain = 241;
-infos.PEST_prior_alpha_range = linspace(infos.UD_xmix,infos.UD_xmax,grain);
+infos.PEST_prior_alpha_range = linspace(infos.UD_xmin,infos.UD_xmax,grain);
 infos.PEST_PF = @PAL_Logistic;
 infos.PEST_xmax = infos.UD_xmax;
-infos.PEST_xmin = infos.UD_xmix;
+infos.PEST_xmin = infos.UD_xmin;
 infos.PEST_mean_mode = 'mean';
 infos.PEST_beta = 2;
 infos.PEST_gamma = 0.5;
@@ -334,13 +337,13 @@ infos.PEST_lambda = 0.02;
 infos.PEST_stop_criterion = 'trials';   
 infos.PEST_stop_rule = infos.ntrials_staircase;
 
-infos.PSI_prior_alpha_range = linspace(infos.UD_xmix,infos.UD_xmax,grain);
+infos.PSI_prior_alpha_range = linspace(infos.UD_xmin,infos.UD_xmax,grain);
 infos.PSI_prior_beta_range = 2;
 infos.PSI_prior_gamma = 0.5;
 infos.PSI_prior_lambda = 0.02;
 infos.PSI_stop_rule = infos.ntrials_staircase;
 infos.PSI_PF = @PAL_Logistic;
-infos.PSI_stim_range = linspace(infos.UD_xmix,infos.UD_xmax,grain);
+infos.PSI_stim_range = linspace(infos.UD_xmin,infos.UD_xmax,grain);
 infos.PSI_marginalize = [-1 -2 -3 -4];   % marginal parameters (1: threshold, 2: slope, 3: guess, 4: lapse) 
                 
 c1 = repmat([1 1 a2 1],infos.ntrials_staircase,1);
@@ -358,15 +361,14 @@ infos.trials = [c1; c2; c3; c4];
 [g]           = gabor(infos);
 [aperture]    = FastMaskedNoiseDemo(infos, g);
 [disctexture] = disc(infos);
-[timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
+% [timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
+[timestamps,Response] = exp_cues_stair(g,infos, aperture, disctexture, participant);
 
 participant.eyefilename = 'express.edf'; 
 participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
 disp('Saving data files........')
 save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
     [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix');
-
-
         
    if exist(participant.eyefilename,'file')
          movefile(participant.eyefilename,sprintf('/mnt/projetos/sacc_cues/data/Subject%s/eyetracking/%s.edf',participant.strnum,participant.filename));
