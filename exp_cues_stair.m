@@ -1,4 +1,4 @@
-function [timestamps,Response] = exp_cues_stair(g, infos, aperture, disctexture, participant)
+function [timestamps,Response,AM] = exp_cues_stair(g, infos, aperture, disctexture, participant)
 
 %     participant.method = input('1-up/1-down (1), 1-up/2-down (2), 1-up/3-down (3), Psi (4), Pest (5)');
     
@@ -494,6 +494,18 @@ end
     DrawFormattedText(infos.win,sprintf('Voce completou todos os blocos da sessao. \n\n Parabens!')...
         ,'center', 'center', infos.black);
     Screen('Flip', infos.win);
+    
+    if participant.method == 1  % 1-up/1-down
+        AM = UD1;
+    elseif participant.method == 2  % 1-up/2-down
+        AM = UD2;
+    elseif participant.method == 3  % 1-up/3-down
+        AM = UD3;
+    elseif participant.method == 4  % psi
+        AM = PSI;
+    elseif participant.method == 5  % pest   
+        AM = PEST;
+    end
 
     ResponsePixx('Close');
     Eyelink('CloseFile');

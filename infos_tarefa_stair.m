@@ -368,7 +368,7 @@ participant.eyefilename = 'express.edf';
 participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
 disp('Saving data files........')
 save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
-    [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix');
+    [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix', 'AM');
         
    if exist(participant.eyefilename,'file')
          movefile(participant.eyefilename,sprintf('/mnt/projetos/sacc_cues/data/Subject%s/eyetracking/%s.edf',participant.strnum,participant.filename));
