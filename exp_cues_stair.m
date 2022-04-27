@@ -1,6 +1,5 @@
-function [timestamps,Response,AM] = exp_cues_stair(g, infos, aperture, disctexture, participant)
+function [timestamps,Response,AM,participant] = exp_cues_stair(g, infos, aperture, disctexture, participant)
 
-%     participant.method = input('1-up/1-down (1), 1-up/2-down (2), 1-up/3-down (3), Psi (4), Pest (5)');
     
     FlushEvents;
     ListenChar(2);
@@ -145,7 +144,7 @@ function [timestamps,Response,AM] = exp_cues_stair(g, infos, aperture, disctextu
 
 try
       
-for q = 1:infos.ntrials
+for q = 1:infos.ntrials_staircase
 
     fp = repmat(WhiteIndex(infos.screenNumber),infos.nrows,1);
     
@@ -156,19 +155,22 @@ for q = 1:infos.ntrials
     curr_tg_type = infos.trials(q,4); % direction of target (1=clockwise;2=counterclock)
    
     if participant.method == 1
-        curr_ori = UD1(curr_cond).xCurrent; % target orientation
+        delta = UD1(curr_cond).xCurrent; % delta = absolute difference between vertical ori and target ori
     elseif participant.method == 2
-        curr_ori = UD2(curr_cond).xCurrent;
+        delta = UD2(curr_cond).xCurrent;
     elseif participant.method == 3
-        curr_ori = UD3(curr_cond).xCurrent;
+        delta = UD3(curr_cond).xCurrent;
     elseif participant.method == 4
-        curr_ori = PSI(curr_cond).xCurrent;
+        delta = PSI(curr_cond).xCurrent;
     elseif participant.method == 5
-        curr_ori = PEST(curr_cond).xCurrent;
+        delta = PEST(curr_cond).xCurrent;
     end
     
-    if curr_tg_type == 2  % counterclockwise conditions
-        curr_ori = 360-curr_ori; % subtract current orientation from 360 degrees
+    % define target orientation
+    if curr_tg_type == 1    % clockwise conditions
+        curr_ori = 360-delta;   % subtract delta from 360 deg to present ori shifted to the right
+    elseif curr_tg_type == 2   % counterclockwise conditions
+        curr_ori = delta;
     end
 
     dotsize = repmat(infos.dotSize,infos.nrows,2);
@@ -434,7 +436,7 @@ for q = 1:infos.ntrials
     elseif participant.method == 2  % 1-up/2-down
         UD2(curr_cond) = PAL_AMUD_updateUD(UD2(curr_cond), outcome);
     elseif participant.method == 3  % 1-up/3-down
-        UD3 = PAL_AMUD_updateUD(UD3(curr_cond), outcome(q));
+        UD3(curr_cond) = PAL_AMUD_updateUD(UD3(curr_cond), outcome);
     elseif participant.method == 4  % psi
         PSI(curr_cond) = PAL_AMPM_updatePM(PSI(curr_cond), outcome);
     elseif participant.method == 5  % pest   
@@ -544,6 +546,6 @@ end
     function fix = inFixWindow(mx,my,fix_window)
             fix = mx > fix_window(1) &&  mx <  fix_window(3) && ...
             my > fix_window(2) && my < fix_window(4) ;
-        end
+    end
 
 end

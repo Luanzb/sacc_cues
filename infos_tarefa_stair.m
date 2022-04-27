@@ -157,8 +157,12 @@ if infos.refreshR == 120
     infos.nrows  = 168;
     infos.fponly = [3 4];
     
-    tg_onset     = 129:3:144;       % define em q loops o alvo será apresentado 
-    ordem        = randi(6,960,1);  % cria 960 val. aleató. entre 16-1.
+  % tg_onset     = 129:3:144;       % define em q loops o alvo será apresentado 
+  % ordem        = randi(6,960,1);  % cria 960 val. aleató. entre 16-1.
+   
+    tg_onset     = 99:3:144;       % define em q loops o alvo será apresentado 
+    ordem        = randi(16,960,1);
+   
     SOAs         = zeros(960,1);    % vetor que sera preenchido abaixo
     offset_target = zeros(960,1);
     ordem2       = zeros(960,1);
@@ -317,12 +321,12 @@ matrix = infos.matrix(1:640,:);
 
 infos.ntrials_staircase = 50;
 
-infos.UD_step_size_down = 1;       
-infos.UD_step_size_up = 1;
+infos.UD_step_size_down = 2;       
+infos.UD_step_size_up = infos.UD_step_size_down;
 infos.UD_stop_criterion = 'trials';   
 infos.UD_stop_rule = infos.ntrials_staircase;
-infos.UD_start_value = 45;
-infos.UD_xmax = 90;
+infos.UD_start_value = 15;
+infos.UD_xmax = 30;
 infos.UD_xmin = 0;
 
 grain = 241;
@@ -338,7 +342,7 @@ infos.PEST_stop_criterion = 'trials';
 infos.PEST_stop_rule = infos.ntrials_staircase;
 
 infos.PSI_prior_alpha_range = linspace(infos.UD_xmin,infos.UD_xmax,grain);
-infos.PSI_prior_beta_range = 2;
+infos.PSI_prior_beta_range = linspace(log10(0.01),log10(100),grain);
 infos.PSI_prior_gamma = 0.5;
 infos.PSI_prior_lambda = 0.02;
 infos.PSI_stop_rule = infos.ntrials_staircase;
@@ -350,7 +354,7 @@ c1 = repmat([1 1 a2 1],infos.ntrials_staircase,1);
 c2 = repmat([2 1 a2 2],infos.ntrials_staircase,1);                
 c3 = repmat([3 2 a3 1],infos.ntrials_staircase,1);
 c4 = repmat([4 2 a3 2],infos.ntrials_staircase,1);
-infos.trials = [c1; c2; c3; c4];
+infos.trials = c1; %[c1; c2; c3; c4];
 
 %(:,1) = condition number
 %(:,2) = type of cue (1=central; 2=peri)
@@ -362,10 +366,23 @@ infos.trials = [c1; c2; c3; c4];
 [aperture]    = FastMaskedNoiseDemo(infos, g);
 [disctexture] = disc(infos);
 % [timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
-[timestamps,Response] = exp_cues_stair(g,infos, aperture, disctexture, participant);
+[timestamps,Response,AM,participant] = exp_cues_stair(g,infos, aperture, disctexture, participant);
+
+
+if participant.method == 1  % 1-up/1-down
+    method_name = '1up1down';
+elseif participant.method == 2  % 1-up/2-down
+    method_name = '1up2down';
+elseif participant.method == 3  % 1-up/3-down
+    method_name = '1up3down';
+elseif participant.method == 4  % psi
+    method_name = 'psi';
+elseif participant.method == 5  % pest   
+    method_name = 'pest';
+end
 
 participant.eyefilename = 'express.edf'; 
-participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
+participant.filename = sprintf('Sacc_cues_%s_sub%s_ses%s_%s',method_name,participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
 disp('Saving data files........')
 save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
     [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix', 'AM');
