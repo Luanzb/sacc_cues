@@ -6,13 +6,14 @@
 %% staircases info
 
 condition = 1;
-UD_ndown = 1;
-UD_xmax = 30;
+UD_ndown = 3;
+UD_step_size = 2.5; 
+UD_xmax = 45;
 UD_xmin = 0;
 PSI_prior_gamma = 0.5;
 PSI_prior_lambda = 0.02;
 PSI_PF = @PAL_Logistic;
-PSI_stim_range = linspace(UD_xmin,UD_xmax,241);
+PSI_stim_range = linspace(UD_xmin,UD_xmax,UD_step_size);
 
 %% up/down
 
@@ -20,8 +21,8 @@ t = 1:length(AM(condition).x);
 title(sprintf('1-Up/%i-Down Staircase',UD_ndown))
 plot(t,AM(condition).x,'k');
 hold on;
-plot(t(AM(condition).response == 1),AM(condition).x(AM(condition).response == 1),'ko', 'MarkeAM(condition)aceColor','k');
-plot(t(AM(condition).response == 0),AM(condition).x(AM(condition).response == 0),'ko', 'MarkeAM(condition)aceColor','w');
+plot(t(AM(condition).response == 1),AM(condition).x(AM(condition).response == 1),'ko', 'MarkerFaceColor','k');
+plot(t(AM(condition).response == 0),AM(condition).x(AM(condition).response == 0),'ko', 'MarkerFaceColor','w');
 set(gca,'FontSize',16);
 axis([0 max(t)+1 min(AM(condition).x)-(max(AM(condition).x)-min(AM(condition).x))/10 max(AM(condition).x)+(max(AM(condition).x)-min(AM(condition).x))/10]);
 xlabel('Trial');
@@ -29,11 +30,11 @@ ylabel('Orientation');
 
 thresh_pc = nthroot(0.5, UD_ndown)*100;
 thresh_ori = PAL_AMUD_analyzeUD(AM(condition), 'reversals', max(AM(condition).reversal)-3);
-thresh_txt = sprintf('thresh %i = %0.2f', thresh_pc, thresh_ori);
+thresh_txt = sprintf('thresh %0.2f = %0.2f', thresh_pc, thresh_ori);
 text(max(t)-15, thresh_ori-2, thresh_txt);
 refline(0, thresh_ori);
 
-fprintf('\n%i threshold as mean of all but last three reversals: %0.2f\n', thresh_pc, thresh_ori);
+fprintf('\n%0.2f threshold as mean of all but last three reversals: %0.2f\n', thresh_pc, thresh_ori);
 
 %% pest
 
@@ -95,7 +96,7 @@ plot(t(response == 1), x(response == 1), 'o', 'color', [0 .5 .5], 'MarkerFaceCol
 plot(t(response == 0), x(response == 0), 'o', 'color', [0 .5 .5], 'MarkerFaceColor', 'w');
 axis square
 xlabel('Tentativa')
-ylabel('Orientação')
+ylabel('Orientacao')
 
 x_lim = [0 ntrials];
 y_lim = [min(PSI_stim_range) max(PSI_stim_range)];
@@ -122,7 +123,7 @@ end
 subplot(4,1,2);
 scatter(unique_levels, mean_resp*100, n_times*10, [0 .5 .5]);
 axis square
-xlabel('Orientação')
+xlabel('Orientacao')
 ylabel('Respostas corretas (%)');  
 
 y_lim = [0 100];
@@ -138,8 +139,8 @@ subplot(4,1,3);
 fit = PSI_PF([threshold(end) slope_fit PSI_prior_gamma PSI_prior_lambda], PSI_stim_range);
 plot(PSI_stim_range, fit, 'color', [0 .5 .5], 'linewidth',2)
 axis square
-xlabel('Orientação')
-ylabel('Probabilidade detecção (%)');  
+xlabel('Orientacao')
+ylabel('Probabilidade deteccao (%)');  
 
 x_lim = [min(PSI_stim_range) max(PSI_stim_range)];
 y_lim = [0.5 1];
@@ -148,7 +149,7 @@ NW = [min(x_lim) max(y_lim)]+[diff(x_lim) -diff(y_lim)]*0.05;
 xlim(x_lim)
 ylim(y_lim)
 yticks(0.5:0.1:1)
-xticks(x_lim(1):2:x_lim(2))
+xticks(x_lim(1):5:x_lim(2))
 txt_alpha = sprintf('alfa = %0.2f',threshold(end));
 text(NW(1), NW(2), txt_alpha);
 txt_slope = sprintf('beta = %0.2f',slope(end));
