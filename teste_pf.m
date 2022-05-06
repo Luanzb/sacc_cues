@@ -7,11 +7,14 @@ PF = @PAL_Gumbel;
 % PF = @PAL_logQuick;
 % PF = @PAL_HyperbolicSecant;
 
-slope = 0.02     % slope "real" da PF
+slope = 1 % slope "real" da PF
 logslope = log10(slope)     % slope pro prior do psi
 
-thresh = 25;
-range = 1:1:45;
+% thresh = 5;
+% range = 1:1:45;
+
+thresh = 0.05;
+range = 0:.005:.1;
 
 guess = 0.5;
 lapse = 0.02;

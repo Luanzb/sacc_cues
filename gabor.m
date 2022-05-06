@@ -14,11 +14,20 @@ sigma = gaborDimPix / 6; % valor original � 7
 %orientation = [];
 contrast = 1;
 aspectRatio = 1.0;
-phase = 0;
+
+val = (0:0.00557:2)'; % cria 360 valores entre 1 e 2
+phase = zeros(168,1);
+
+for gg = 1:168
+    val2 = randi(length(val)); % escolhe um valor aleatorio entre 1 e 360
+    card = val(val2); % na posicao val2, a variavel card recebera o valor de val
+    ph = pi/card;
+    phase(gg,1) = ph*2*pi;
+end
 
 % Spatial Frequency (Cycles Per Pixel)
 % One Cycle = Grey-Black-Grey-White-Grey i.e. One Black and One White Lobe
-numCycles = 8;
+numCycles = 5.5;
 freq = numCycles / gaborDimPix;
 
 % Build a procedural gabor texture (Note: to get a "standard" Gabor patch
@@ -28,10 +37,13 @@ freq = numCycles / gaborDimPix;
 % https://groups.yahoo.com/neo/groups/psychtoolbox/conversations/topics/9174
 backgroundOffset = [0.5 0.5 0.5 0.0];
 disableNorm = 1;
-preContrastMultiplier = 0.3;
+preContrastMultiplier = 0.5;
 g.gabortex = CreateProceduralGabor(infos.win, gaborDimPix, gaborDimPix, [],...
     backgroundOffset, disableNorm, preContrastMultiplier);
 
-% Randomise the phase of the Gabors and make a properties matrix.
-g.propertiesMat = [phase, freq, sigma, contrast, aspectRatio, 0, 0, 0];
+for bb = 1:168
+    % Randomise the phase of the Gabors and make a properties matrix.
+    g(bb).propertiesMat = [phase(bb,1), freq, sigma, contrast, aspectRatio, 0, 0, 0];
+end
+
 end

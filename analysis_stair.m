@@ -7,13 +7,13 @@
 
 condition = 1;
 UD_ndown = 3;
-UD_step_size = 2.5; 
-UD_xmax = 45;
+UD_step_size = 1; 
+UD_xmax = 60;
 UD_xmin = 0;
 PSI_prior_gamma = 0.5;
 PSI_prior_lambda = 0.02;
-PSI_PF = @PAL_Logistic;
-PSI_stim_range = linspace(UD_xmin,UD_xmax,UD_step_size);
+PSI_PF = @PAL_Gumbel;
+PSI_stim_range = 0:1:45;
 
 %% up/down
 

@@ -45,16 +45,20 @@ res = infos.rect(3);
 res2 = infos.rect(4);
 dva = 2.2;        % tam do gabor/noise
 dva2 = 0.3;       % tam do ponto de fixação e placeholders
-dva3 = 0.63;      % tam da pista
+dva3 = 0.5;      % tam da pista
 dva4 = 8;         % excentricidade do alvo em relação ao ponto de fixação.
-dva5 = 2.5;       % excent. dos pholders em relação ao centro do eixo y.
+dva5 = 2; %2.5;       % excent. dos pholders em relação ao centro do eixo y.
 dva6 = 0.6;       % ponto de fixacao externo em preto
+dva7 = 6; %5.5;        % excent. placeholder mais perto
+dva8 = 10; %10.5;       % excent. placeholder mais distante
 [a1] = dva2pix(dist, width,  res,  dva);
 [a2] = dva2pix(dist, width,  res,  dva2);
 [a3] = dva2pix(dist, width,  res,  dva3);
 [a4] = dva2pix(dist, width,  res,  dva4);
 [a5] = dva2pix(dist, height, res2, dva5);
 [a6] = dva2pix(dist, width,  res,  dva6);
+[a7] = dva2pix(dist, width,  res,  dva7);
+[a8] = dva2pix(dist, width,  res,  dva8);
 
 infos.roi_fixwinsize_dva = 4; % Set fixation ROI
 infos.roi_fixwinsize_pix = dva2pix(dist,width,res,infos.roi_fixwinsize_dva);
@@ -67,6 +71,12 @@ x2 = infos.xcenter + a4;
 y0 = infos.ycenter;
 y1 = infos.ycenter - a5;
 y2 = infos.ycenter + a5;
+
+x3  = infos.xcenter - a7; % pholder perto esquerda
+x3a = infos.xcenter - a8; % pholder distante esquerda
+x4  = infos.xcenter + a7; % pholder perto direita
+x4a = infos.xcenter + a8; % pholder distante direita
+
 infos.coordL = CenterRectOnPoint(rect_stim,x1,y0);   % posição gabor/noise na esquerda
 infos.coordR = CenterRectOnPoint(rect_stim,x2,y0);  % pos gabor/noise direita
 
@@ -76,12 +86,12 @@ infos.dotSize = a2;                % tam do pf e placeholders
 infos.dotSize2 = a6;
 
 infos.fpointcoord = [infos.xcenter, infos.ycenter];   % Coordenadas do pf
-infos.pholdercoordL = [x1, x1; y2, y1];  % coordenadas pista lado esquerdo
-infos.pholdercoordR = [x2, x2; y2, y1];  % coord pista lado direito
+infos.pholdercoordL = [x3,  x3a, x3,  x3a; y2, y2, y1, y1];  % coordenadas pista lado esquerdo
+infos.pholdercoordR = [x4,  x4a, x4,  x4a; y2, y2, y1, y1];  % coord pista lado direito
                           
 infos.flags = 1;   % permite que as variaveis abaixo sejam modificadas 
 infos.filtmode = -2;  % noise: valores negativos deixam o noise com o blur
-infos.galpha = 1;   % 1 equivale a 100% opaco; 0 equivale a 100% tranparente.
+infos.galpha = 0.4; % 1;   % 1 equivale a 100% opaco; 0 equivale a 100% tranparente.
 
 infos.orientation = [0 0]; % orientacao dos gabores
 
@@ -94,9 +104,6 @@ if infos.refreshR == 120
     infos.loops = 168; 
     infos.nrows = 168;
     infos.fponly = [3 4];
-    
-  % tg_onset = 129:3:144;       
-  % ordem = randi(6,infos.ntrials,1);  
    
     tg_onset = 99:3:144;    % define em quais loops o alvo será apresentado 
     ordem = randi(16,infos.ntrials,1);  % cria valores aleatorios entre 16-1
@@ -110,7 +117,7 @@ if infos.refreshR == 120
     end
     
     for p = 1:length(ordem)
-        ordem2(p,1) = ordem(p) + 2; 
+        ordem2(p,1) = ordem(p) + 5; 
     end
     
     for z = 1:length(ordem)
@@ -145,27 +152,27 @@ if infos.refreshR == 120
     infos.show_noise_gabor = [ng;repmat(ng,27,1)];   
 end
 
-damnit = zeros(60,1);
-
-for dd = 1:60
-   if infos.show_noise_gabor(infos.SOA(dd,1)) == 1
-       damnit(dd) = 1;
-   end
-end
+% damnit = zeros(60,1);
+% 
+% for dd = 1:60
+%    if infos.show_noise_gabor(infos.SOA(dd,1)) == 1
+%        damnit(dd) = 1;
+%    end
+% end
 
 %% STAIRCASES INFO
 
-infos.UD_step_size_down = 2.5;       
+infos.UD_step_size_down = 1;       
 infos.UD_step_size_up = infos.UD_step_size_down;
 infos.UD_stop_criterion = 'trials';   
 infos.UD_stop_rule = infos.ntrials;
-infos.UD_start_value = 15;
-infos.UD_xmax = 45;
+infos.UD_start_value = 11.88;
+infos.UD_xmax = 30;
 infos.UD_xmin = 0;
 
-grain = 241;
+grain = 200;
 infos.PEST_prior_alpha_range = linspace(infos.UD_xmin,infos.UD_xmax,grain);
-infos.PEST_PF = @PAL_Logistic;
+infos.PEST_PF = @PAL_Gumbel;
 infos.PEST_xmax = infos.UD_xmax;
 infos.PEST_xmin = infos.UD_xmin;
 infos.PEST_mean_mode = 'mean';
@@ -175,19 +182,19 @@ infos.PEST_lambda = 0.02;
 infos.PEST_stop_criterion = 'trials';   
 infos.PEST_stop_rule = infos.ntrials;
 
-infos.PSI_prior_alpha_range = linspace(infos.UD_xmin,infos.UD_xmax,grain);
-infos.PSI_prior_beta_range = linspace(log10(0.01),log10(100),grain);
+infos.PSI_prior_alpha_range = linspace(1,45,grain);
+infos.PSI_prior_beta_range = linspace(log10(0.02),log10(0.4),grain);
 infos.PSI_prior_gamma = 0.5;
 infos.PSI_prior_lambda = 0.02;
 infos.PSI_stop_rule = infos.ntrials;
-infos.PSI_PF = @PAL_Logistic;
-infos.PSI_stim_range = linspace(infos.UD_xmin,infos.UD_xmax,infos.UD_step_size_down);
-infos.PSI_marginalize = [-1 -2 -3 -4];   % marginal parameters (1: threshold, 2: slope, 3: guess, 4: lapse) 
+infos.PSI_PF = @PAL_Gumbel;
+infos.PSI_stim_range = 0:1:45;
+infos.PSI_marginalize = [-1 -2 -3 4];   % marginal parameters (1: threshold, 2: slope, 3: guess, 4: lapse) 
                 
-infos.trials = repmat([[1 1 a2 1];...
-                       [1 1 a2 2];...
-                       [2 1 a2 1];...
-                       [2 1 a2 2]],infos.ntrials/4,1);
+infos.trials = repmat([[1 2 a3 1];...
+                       [1 2 a3 2];...
+                       [2 2 a3 1];...
+                       [2 2 a3 2]],infos.ntrials/4,1);
 infos.trials = infos.trials(randperm(size(infos.trials,1)),:);
 
 %(:,1) = side of cue (1=left; 2=right)

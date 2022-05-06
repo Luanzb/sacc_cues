@@ -86,13 +86,27 @@ function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, partic
 
 
 try
+    
 
 for q = 1:infos.ntrials
 
     
+    ble = 0;
+    blee = 0;
+    
+    for vrau = 1:3
+        if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
+            blee = blee + 1;
+        end
+        ble = ble + 1;
+    end
+
+    blee2 = abs(blee - 1);
+         
+    
     dotsize = repmat(infos.dotSize,infos.nrows,2);
-    dotsize(infos.cue_onoff(q,1):infos.cue_onoff(q,2),1) = infos.leftcuesize(q);
-    dotsize(infos.cue_onoff(q,1):infos.cue_onoff(q,2),2) = infos.rightcuesize(q);
+    dotsize(infos.cue_onoff(q,1):infos.nrows,1) = infos.leftcuesize(q);
+    dotsize(infos.cue_onoff(q,1):infos.nrows,2) = infos.rightcuesize(q);
     
     fp = repmat(WhiteIndex(infos.screenNumber),infos.nrows,1);
    
@@ -106,7 +120,7 @@ for q = 1:infos.ntrials
     dclear(infos.cue_onoff(q,2)) = 1;
          
     centralcue = repmat(infos.grey,infos.nrows,1);
-    centralcue(infos.cue_onoff(q,1):infos.cue_onoff(q,2),1) = infos.black;
+    centralcue(infos.cue_onoff(q,1):infos.nrows,1) = infos.black;
     
     
     HideCursor;
@@ -122,7 +136,7 @@ for q = 1:infos.ntrials
         text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecera a seguir ENQUANTO aperta a tecla dourada (A)';
         DrawFormattedText(infos.win, text, 'center', 'center', [0,0,0]);
         Screen('Flip', infos.win);
-        WaitSecs(5);
+        WaitSecs(3);
 
         EyelinkDoDriftCorrection(el, [infos.xcenter, infos.ycenter]);      % Run eyetracker drift correction
         WaitSecs(1);
@@ -180,9 +194,9 @@ for q = 1:infos.ntrials
     Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoord,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     [~, timestamps.fix_on(q)] = Screen('Flip', infos.win);
-    
     
     
     %%
@@ -192,8 +206,6 @@ for q = 1:infos.ntrials
         if(damn ~= 0)
             
             break;
-%          else
-%              Screen('CloseAll');
         end
 
         if Eyelink('NewFloatSampleAvailable') > 0
@@ -218,22 +230,22 @@ for q = 1:infos.ntrials
     Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoord,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     [timestamps.start_trial(q)] = Screen('Flip', infos.win, timestamps.fix_on(q));
     Eyelink('Message', sprintf('array_on_%1d', q));       
     Eyelink('Command', 'record_status_message "TRIAL %d', q);
-
     
-    
+    ResponsePixx('StartNow', 1, [1 0 1 0 0], 1);
     for b = 1:infos.loops
         now = GetSecs();   
              
         % 1 segundo apresenta��o placeholders, pf, noise/gabor
-        texL=Screen('MakeTexture',infos.win,noise(b,1).noiseimg,[],infos.flags);
-        texR=Screen('MakeTexture',infos.win,noise(b,2).noiseimg,[],infos.flags);
+        texL=Screen('MakeTexture',infos.win,noise(b + blee2,1).noiseimg,[],infos.flags);
+        texR=Screen('MakeTexture',infos.win,noise(b + blee2,2).noiseimg,[],infos.flags);
         
         
-            % Pista central
+            % Pista central VALIDA
         if infos.matrix(q,1) == 1
             if infos.matrix(q,2) == 1
                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
@@ -244,44 +256,49 @@ for q = 1:infos.ntrials
             end
         end
         
+        
         if infos.show_noise_gabor(b) == 1
-            if orient(b,1) == 0 
+
+            Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+            Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
+            orient(b,1),infos.filtmode,infos.galpha, [], [],...
+            kPsychDontDoRotation, g(b).propertiesMat');
+            Screen('DrawTextures', infos.win,[aperture disctexture],...
+            [], infos.coordL, [], 0, [],infos.grey);
+
+            Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            Screen('DrawTextures', infos.win, texR, [], infos.coordR, orient(b,2),...
+            infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g(b).propertiesMat');
+            Screen('DrawTextures', infos.win, [aperture disctexture],...
+            [], infos.coordR, [], 0,[],infos.grey);
+                 
+        else 
+            if b <= infos.SOA(q,4)
+                texL = g.gabortex; texR = g.gabortex;
+                Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
+                Screen('DrawTextures', infos.win, texL, [], infos.coordL,...
+                orient(b,1),0,1,[],[], kPsychDontDoRotation, g(b).propertiesMat');
+                Screen('DrawTextures', infos.win, texR, [], infos.coordR,...
+                orient(b,2), 0,1,[],[],kPsychDontDoRotation, g(b).propertiesMat');
+            
+            else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
+                
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
                 Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
                 orient(b,1),infos.filtmode,infos.galpha, [], [],...
-                kPsychDontDoRotation, g.propertiesMat');
+                kPsychDontDoRotation, g(b).propertiesMat');
                 Screen('DrawTextures', infos.win,[aperture disctexture],...
                 [], infos.coordL, [], 0, [],infos.grey);
-            else % apresenta alvo no lado esquerdo
-                texL = g.gabortex;
-                Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-                Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                orient(b,1),0,1,[],[],kPsychDontDoRotation, g.propertiesMat');
-            end 
-                
-            if orient(b,2) == 0
+
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 Screen('DrawTextures', infos.win, texR, [], infos.coordR, orient(b,2),...
-                infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g.propertiesMat');
+                infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g(b).propertiesMat');
                 Screen('DrawTextures', infos.win, [aperture disctexture],...
                 [], infos.coordR, [], 0,[],infos.grey);
-            else % apresenta o alvo no lado direito
-                texR = g.gabortex; 
-                Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-                Screen('DrawTextures', infos.win, texR, [],infos.coordR,...
-                orient(b,2),0,1,[],[],kPsychDontDoRotation, g.propertiesMat');
-            end 
-                 
-        else % apresenta gabor se b for 0
-            texL = g.gabortex; texR = g.gabortex;
-            Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-            Screen('DrawTextures', infos.win, texL, [], infos.coordL,...
-            orient(b,1),0,1,[],[], kPsychDontDoRotation, g.propertiesMat');
-            Screen('DrawTextures', infos.win, texR, [], infos.coordR,...
-            orient(b,2), 0,1,[],[],kPsychDontDoRotation, g.propertiesMat');
+            end
+            
         end
-               
-        
+
         
         Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
@@ -347,18 +364,18 @@ for q = 1:infos.ntrials
                     end
                 end
             end
-  %  end
 
+            
     % Desenha os placeholders e pf na tela
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoord,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
+    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('Flip', infos.win);
-    
      
     if participant.giveresp == true
         % Wait for button press
-        ResponsePixx('StartNow', 1, [1 0 1 0 0], 1);
+%         ResponsePixx('StartNow', 1, [1 0 1 0 0], 1);
         while 1
             [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
             if ~isempty(buttonStates)
