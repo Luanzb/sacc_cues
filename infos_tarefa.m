@@ -27,12 +27,16 @@ Screen('Preference', 'SkipSyncTests', 1); %
 Screen('Preference', 'TextRenderer');
 Screen('Preference', 'Verbosity', 0);
 
-infos.ntrials              = 40; % n�mero de tentativas
+infos.ntrials              = 100; % n�mero de tentativas
 infos.screen_num           = 0;
-infos.pausas               = (10:10:30);%(160:160:800); % 5 pausas em uma sessão 
-infos.pausas2              = (11:10:31);%(161:160:801);  % 
+
+% infos.pausas               = (100:100:900); % 5 pausas em uma sessão 
+% infos.pausas2              = (101:100:901);% 
+infos.pausas               = (10:10:90); % 5 pausas em uma sessão 
+infos.pausas2              = (11:10:91);% 
+
 infos.time                 = [0.025  0.5  1  0  0.0167]; 
-infos.fix_dur_t            = 0.3;  % Duration of fixation at ROI to start trial in secs
+infos.fix_dur_t            = 0.5;  % Duration of fixation at ROI to start trial in secs
 infos.screenNumber         = max(Screen('Screens'));
 infos.white                = WhiteIndex(infos.screenNumber);
 infos.black                = BlackIndex(infos.screenNumber);
@@ -123,27 +127,35 @@ infos.galpha   = 0.4;   % 1 equivale a 100% opaco; 0 equivale a 100% tranparente
 
 
 mat = [...
-     %pista          lado alvo     orient alvo  
-     %central = 1    esq = 1       45 = 1
-     % perif = 2     dir = 2       315 = 2
-    % neutra c = 3
-    % neutra p = 4
+    %pista            lado alvo     orient alvo  
+   % perifsac = 1     esq = 1       45 = 1
+   %                  dir = 2       315 = 2
+ 
           1             1             1            
           1             1             2            
           1             2             1           
-          1             2             2                  
-          
-          2             1             1                       
+          1             2             2                                           
+];
+
+
+   % pista            lado alvo     orient alvo  
+   %                  esq = 1       45 = 1
+   % perifcovert = 2  dir = 2       315 = 2
+   
+mat1 = [  2             1             1                       
           2             1             2                    
           2             2             1                         
           2             2             2                                   
 ];
-
 % add 119 vezes a matriz mat dentro dela mesma, gerando uma sessão com 960
 % tentativas.
-mat          =[mat;repmat(mat,49,1)];
-infos.matrix = mat(randperm(size(mat,1)),:); % aleatoriza as linhas
+mat          =[mat;repmat(mat,124,1)];
+matrix = mat(randperm(size(mat,1)),:); % aleatoriza as linhas
 
+mat1          =[mat1;repmat(mat1,124,1)];
+matrixx = mat1(randperm(size(mat1,1)),:); % aleatoriza as linhas
+
+infos.matrix = [matrix;matrixx];
 
 infos.refreshR   = Screen('FrameRate',infos.screenNumber);
 
@@ -248,15 +260,15 @@ infos.pista_direita  = zeros(infos.ntrials,1);
 infos.Alvo           = infos.matrix(:,3);   
 
 % target orientation
-degree_targetccw = 8.09;  % counterclockwise conditions | shifted to the left
-degree_targetcw = 360 - degree_targetccw;  % clockwise conditions | shifted to the right
+degree_targetccw = 8.09;  % counterclockwise condition | shifted to the left
+degree_targetcw = 360 - degree_targetccw;  % clockwise condition | shifted to the right
 
 
 % define o tipo de pista, lado e orienta��o do alvo para a respectiva
 % tentativa.
 for q = 1:infos.ntrials
     
-    % pista central VALIDA
+    % pista periférica sac
     if infos.matrix(q,1) == 1
         infos.leftcuesize(q)  =  a2; 
         infos.rightcuesize(q) =  a2;
@@ -281,7 +293,7 @@ for q = 1:infos.ntrials
         end
    
         
-    elseif infos.matrix(q,1) == 2 % pista perif�rica VALIDA 
+    elseif infos.matrix(q,1) == 2 % pista periférica covert
         
         % pista e alvo na esquerda
         if infos.matrix(q,2) == 1

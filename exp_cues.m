@@ -119,8 +119,8 @@ for q = 1:infos.ntrials
     dclear(infos.cue_onoff(q,1)) = 1;
     dclear(infos.cue_onoff(q,2)) = 1;
          
-    centralcue = repmat(infos.grey,infos.nrows,1);
-    centralcue(infos.cue_onoff(q,1):infos.nrows,1) = infos.black;
+%     centralcue = repmat(infos.grey,infos.nrows,1);
+%     centralcue(infos.cue_onoff(q,1):infos.nrows,1) = infos.black;
     
     
     HideCursor;
@@ -129,9 +129,11 @@ for q = 1:infos.ntrials
     %%
      Eyelink('SetOfflineMode'); % Put tracker in idle/offline mode before drawing Host PC graphics and before recording
     
-     if q == 1 || q == infos.pausas2(1) || q == infos.pausas2(2) ||...
-        q == infos.pausas2(3) %||  q == infos.pausas2(4) ||...
-        % q == infos.pausas2(5)
+     if q == 1 || q == infos.pausas2(1) ||  q == infos.pausas2(2) ||...
+                  q == infos.pausas2(3) ||  q == infos.pausas2(4) ||...
+                  q == infos.pausas2(5) ||  q == infos.pausas2(6) ||...
+                  q == infos.pausas2(7) ||  q == infos.pausas2(8) ||...
+                  q == infos.pausas2(9)
     
         text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecera a seguir ENQUANTO aperta a tecla dourada (A)';
         DrawFormattedText(infos.win, text, 'center', 'center', [0,0,0]);
@@ -144,13 +146,13 @@ for q = 1:infos.ntrials
         bloco2 = bloco2 + 1;
         
         
-        if rem(bloco2,2) == 1
+        if  infos.matrix(q,1) == 1
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ATENCAO para o tipo de pista --- CENTRAL',...
+            sprintf('Bloco %i.\n\n ATENÇÃO: Condição de SACADA',...
             bloco2),'center', 'center', infos.black);   
         else
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ATENCAO para o tipo de pista --- PERIFERICA',...
+            sprintf('Bloco %i.\n\n ATENÇÃO: Condição ENCOBERTA',...
             bloco2),'center', 'center', infos.black); 
         end
         Screen('Flip', infos.win);
@@ -244,17 +246,17 @@ for q = 1:infos.ntrials
         texL=Screen('MakeTexture',infos.win,noise(b + blee2,1).noiseimg,[],infos.flags);
         texR=Screen('MakeTexture',infos.win,noise(b + blee2,2).noiseimg,[],infos.flags);
         
-        
-            % Pista central VALIDA
-        if infos.matrix(q,1) == 1
-            if infos.matrix(q,2) == 1
-                Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
-                ,infos.xcenter - 26,infos.ycenter, 4);
-            else
-                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
-                ,infos.xcenter + 26,infos.ycenter, 4);
-            end
-        end
+%         
+%             % Pista central VALIDA
+%         if infos.matrix(q,1) == 1
+%             if infos.matrix(q,2) == 1
+%                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
+%                 ,infos.xcenter - 26,infos.ycenter, 4);
+%             else
+%                  Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
+%                 ,infos.xcenter + 26,infos.ycenter, 4);
+%             end
+%         end
         
         
         if infos.show_noise_gabor(b) == 1
@@ -340,11 +342,12 @@ for q = 1:infos.ntrials
     % aparecimento da pista/alvo para sair deste loop while e conseguir dar
     % sua resposta.
     
-        if infos.matrix(q,2) == 1 % alvo e pista na esquerda
-            fix_window_targ = infos.coordL';
-        else                      % alvo e pista na direita
-            fix_window_targ = infos.coordR';
-        end
+        if infos.matrix(q,1) == 1 % condição de sacada
+            if infos.matrix(q,2) == 1
+                fix_window_targ = infos.coordL'; 
+            else
+                fix_window_targ = infos.coordR';
+            end
             
        
             while 1
@@ -364,6 +367,7 @@ for q = 1:infos.ntrials
                     end
                 end
             end
+        end
 
             
     % Desenha os placeholders e pf na tela
@@ -410,9 +414,11 @@ for q = 1:infos.ntrials
           
     
     
-    if q == infos.pausas(1) || q == infos.pausas(2) ||...
-       q == infos.pausas(3) %|| q == infos.pausas(4) ||...
-      % q == infos.pausas(5)
+     if q == 1 || q == infos.pausas2(1) ||  q == infos.pausas2(2) ||...
+                  q == infos.pausas2(3) ||  q == infos.pausas2(4) ||...
+                  q == infos.pausas2(5) ||  q == infos.pausas2(6) ||...
+                  q == infos.pausas2(7) ||  q == infos.pausas2(8) ||...
+                  q == infos.pausas2(9)
      
         bloco = bloco + 1;
         

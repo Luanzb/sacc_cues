@@ -77,6 +77,8 @@ function [timestamps, response, AM, trls, targ] = exp_cues_stair(g, infos, apert
   
     %%
     
+    tempo = 0.025;
+    
     trls = struct;
     response = NaN(infos.ntrials,6);
     abort = false;
@@ -245,7 +247,7 @@ for q = 1:infos.ntrials
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
-    [~, timestamps.fix_on(q)] = Screen('Flip', infos.win);
+    [~, timestamps.fix_on(q)] = Screen('Flip', infos.win, tempo);
 
     % Wait until participant is fixating for infos.fix_dur_t
     while 1
@@ -372,23 +374,23 @@ for q = 1:infos.ntrials
        
        % Get stimuli presentation timings and send eyelink timing messages
        if b == infos.startgap(q)
-           [timestamps.gap_onset(q)] = Screen('Flip', infos.win, now, dclear(b));
+           [timestamps.gap_onset(q)] = Screen('Flip', infos.win, now+tempo, dclear(b));
            Eyelink('Message', sprintf('gap_onset_%1d', q));   % Send Eyelink message of gap onset
            response(q,2) = toc;
        elseif b == infos.cue_onoff(q,1)
-           [timestamps.cue_onset(q)] = Screen('Flip', infos.win, now, dclear(b));
+           [timestamps.cue_onset(q)] = Screen('Flip', infos.win, now+tempo, dclear(b));
            Eyelink('Message', sprintf('cue_onset_%1d', q));   % Send Eyelink message of cue onset
            response(q,3) = toc;
        elseif b == infos.cue_onoff(q,2)
-           [timestamps.cue_offset(q)] = Screen('Flip', infos.win, now, dclear(b));
+           [timestamps.cue_offset(q)] = Screen('Flip', infos.win, now+tempo, dclear(b));
           % Eyelink('Message', sprintf('cue_offset_%1d', q));  % Send Eyelink message of cue offset
            response(q,4) = toc;
        elseif b == infos.SOA(q,1)
-           [timestamps.target_onset(q)] = Screen('Flip', infos.win, now, dclear(b));
+           [timestamps.target_onset(q)] = Screen('Flip', infos.win, now+tempo, dclear(b));
            Eyelink('Message', sprintf('target_onset_%1d', q));% Send Eyelink message of target onset
            response(q,5) = toc; % inicio apresentacao do alvo
        else
-           Screen('Flip', infos.win, now, dclear(b));
+           Screen('Flip', infos.win, now+tempo, dclear(b));
        end
        
        response(q,6) = response(q,5) - response(q,3); % SOA
@@ -424,7 +426,7 @@ for q = 1:infos.ntrials
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
-    Screen('Flip', infos.win);
+    Screen('Flip', infos.win, tempo);
     
     if participant.giveresp == true
         % Wait for button press
