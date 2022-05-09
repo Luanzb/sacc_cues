@@ -166,7 +166,7 @@ infos.UD_step_size_down = 1;
 infos.UD_step_size_up = infos.UD_step_size_down;
 infos.UD_stop_criterion = 'trials';   
 infos.UD_stop_rule = infos.ntrials;
-infos.UD_start_value = 11.88;
+infos.UD_start_value = 27.81;
 infos.UD_xmax = 30;
 infos.UD_xmin = 0;
 

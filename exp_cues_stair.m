@@ -77,7 +77,7 @@ function [timestamps, response, AM, trls, targ] = exp_cues_stair(g, infos, apert
   
     %%
     
-    tempo = 0.025;
+    tempo = 0;
     
     trls = struct;
     response = NaN(infos.ntrials,6);
@@ -389,6 +389,7 @@ for q = 1:infos.ntrials
            [timestamps.target_onset(q)] = Screen('Flip', infos.win, now+tempo, dclear(b));
            Eyelink('Message', sprintf('target_onset_%1d', q));% Send Eyelink message of target onset
            response(q,5) = toc; % inicio apresentacao do alvo
+          % WaitSecs(0.5)
        else
            Screen('Flip', infos.win, now+tempo, dclear(b));
        end

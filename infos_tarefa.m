@@ -103,8 +103,8 @@ x3a = infos.xcenter - a8; % pholder distante esquerda
 x4  = infos.xcenter + a7; % pholder perto direita
 x4a = infos.xcenter + a8; % pholder distante direita
 
-infos.coordL = CenterRectOnPoint(rect_stim,x1,y0);   % posição gabor/noise na esquerda
-infos.coordR = CenterRectOnPoint(rect_stim,x2,y0);  % pos gabor/noise direita
+infos.coordL = CenterRectOnPoint(rectt,x1,y0);   % posição gabor/noise na esquerda
+infos.coordR = CenterRectOnPoint(rectt,x2,y0);  % pos gabor/noise direita
 
 
 infos.fpointcolor   = [1 0 0];           % o PF irá receber� cor vermelha.
@@ -186,7 +186,7 @@ if infos.refreshR== 120
     end
     
     
-    infos.SOA = [SOAs  ordem  ordem2 tg_offset];  
+    infos.SOA = [SOAs  ordem  ordem2 offset_target];  
     % infos.SOA(:,1) = inicio de apresentacao do alvo
     % infos.SOA(:,2) = ordem de inicio de apresentacao do alvo 
     % infos.SOA(:,3) = valor que devera ser subtraido para definir o momento de 
@@ -270,11 +270,13 @@ for q = 1:infos.ntrials
     
     % pista periférica sac
     if infos.matrix(q,1) == 1
-        infos.leftcuesize(q)  =  a2; 
-        infos.rightcuesize(q) =  a2;
         
         % alvo na esquerda
         if infos.matrix(q,2) == 1
+            infos.leftcuesize(q)    = a3;
+            infos.rightcuesize(q)   = a2; 
+            infos.pista_esquerda(q) = 1;
+            
             if infos.matrix(q,3) == 1 % define orient do alvo
                  infos.orienttarget(q,1) = degree_targetccw;
                  infos.orienttarget(q,2) = 0; 
@@ -283,6 +285,10 @@ for q = 1:infos.ntrials
                  infos.orienttarget(q,2) = 0; 
             end  
         else %alvo na direita  
+             infos.leftcuesize(q)   = a2;
+             infos.rightcuesize(q)  = a3;
+             infos.pista_direita(q) = 1;
+             
             if infos.matrix(q,3) == 1 % define orient do alvo
                  infos.orienttarget(q,1) = 0;
                  infos.orienttarget(q,2) = degree_targetccw; 
@@ -330,7 +336,7 @@ for q = 1:infos.ntrials
 
 end
 
-matrix = infos.matrix(1:600,:);
+matrix = infos.matrix(1:infos.ntrials,:);
 
 [g]           = gabor(infos);
 [aperture]    = FastMaskedNoiseDemo(infos, g);
