@@ -79,7 +79,7 @@ function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, partic
   
     %%
     
-    Response = zeros(640,6);
+    Response = zeros(400,6);
     bloco = 0;
     bloco2 = 0;
     abort = false;
@@ -119,8 +119,8 @@ for q = 1:infos.ntrials
     dclear(infos.cue_onoff(q,1)) = 1;
     dclear(infos.cue_onoff(q,2)) = 1;
          
-%     centralcue = repmat(infos.grey,infos.nrows,1);
-%     centralcue(infos.cue_onoff(q,1):infos.nrows,1) = infos.black;
+    centralcue = repmat(infos.grey,infos.nrows,1);
+    centralcue(infos.cue_onoff(q,1):infos.nrows,1) = infos.black;
     
     
     HideCursor;
@@ -130,11 +130,8 @@ for q = 1:infos.ntrials
      Eyelink('SetOfflineMode'); % Put tracker in idle/offline mode before drawing Host PC graphics and before recording
     
      if q == 1 || q == infos.pausas2(1) ||  q == infos.pausas2(2) ||...
-                  q == infos.pausas2(3) ||  q == infos.pausas2(4) ||...
-                  q == infos.pausas2(5) ||  q == infos.pausas2(6) ||...
-                  q == infos.pausas2(7) ||  q == infos.pausas2(8) ||...
-                  q == infos.pausas2(9)
-    
+                  q == infos.pausas2(3)
+              
         text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecera a seguir ENQUANTO aperta a tecla dourada (A)';
         DrawFormattedText(infos.win, text, 'center', 'center', [0,0,0]);
         Screen('Flip', infos.win);
@@ -148,13 +145,22 @@ for q = 1:infos.ntrials
         
         if  infos.matrix(q,1) == 1
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ATENÇÃO: Condição de SACADA',...
+            sprintf('Bloco %i.\n\n ---------------- \n\n Pista PERIFERICA \n\n Condição de SACADA',...
             bloco2),'center', 'center', infos.black);   
-        else
+        elseif infos.matrix(q,1) == 2
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ATENÇÃO: Condição ENCOBERTA',...
+            sprintf('Bloco %i.\n\n ---------------- \n\n Pista PERIFERICA \n\n Condição de FIXACAO',...
+            bloco2),'center', 'center', infos.black); 
+        elseif infos.matrix(q,1) == 3
+            DrawFormattedText(infos.win,...
+            sprintf('Bloco %i.\n\n ---------------- \n\n Pista CENTRAL \n\n Condição de SACADA',...
+            bloco2),'center', 'center', infos.black);   
+        elseif infos.matrix(q,1) == 4
+            DrawFormattedText(infos.win,...
+            sprintf('Bloco %i.\n\n ---------------- \n\n Pista CENTRAL \n\n Condição de FIXACAO',...
             bloco2),'center', 'center', infos.black); 
         end
+        
         Screen('Flip', infos.win);
         
         
@@ -246,17 +252,17 @@ for q = 1:infos.ntrials
         texL=Screen('MakeTexture',infos.win,noise(b + blee2,1).noiseimg,[],infos.flags);
         texR=Screen('MakeTexture',infos.win,noise(b + blee2,2).noiseimg,[],infos.flags);
         
-%         
-%             % Pista central VALIDA
-%         if infos.matrix(q,1) == 1
-%             if infos.matrix(q,2) == 1
-%                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
-%                 ,infos.xcenter - 26,infos.ycenter, 4);
-%             else
-%                  Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
-%                 ,infos.xcenter + 26,infos.ycenter, 4);
-%             end
-%         end
+        
+            % Pista central 
+        if infos.matrix(q,1) == 3 || infos.matrix(q,1) == 4
+            if infos.matrix(q,2) == 1
+                Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
+                ,infos.xcenter - 26,infos.ycenter, 4);
+            else
+                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
+                ,infos.xcenter + 26,infos.ycenter, 4);
+            end
+        end
         
         
         if infos.show_noise_gabor(b) == 1
@@ -342,7 +348,7 @@ for q = 1:infos.ntrials
     % aparecimento da pista/alvo para sair deste loop while e conseguir dar
     % sua resposta.
     
-        if infos.matrix(q,1) == 1 % condição de sacada
+        if infos.matrix(q,1) == 1 || infos.matrix(q,1) == 3 % condição de sacada
             if infos.matrix(q,2) == 1
                 fix_window_targ = infos.coordL'; 
             else
@@ -384,10 +390,10 @@ for q = 1:infos.ntrials
             [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
             if ~isempty(buttonStates)
                 if buttonStates(1,1) == 1 % red button
-                    Response(q,1) = 1;   % sentido horario
+                    Response(q,1) = 2;   % sentido horario
                     break;
                 elseif buttonStates(1,3) == 1 % green button
-                    Response(q,1) = 2; % sentido anti-horario
+                    Response(q,1) = 1; % sentido anti-horario
                     break;
                 elseif buttonStates(1,4) == 1 % blue button | sai do exp
                     abort = true;
@@ -415,10 +421,7 @@ for q = 1:infos.ntrials
     
     
      if   q == infos.pausas(1) ||  q == infos.pausas(2) ||...
-          q == infos.pausas(3) ||  q == infos.pausas(4) ||...
-          q == infos.pausas(5) ||  q == infos.pausas(6) ||...
-          q == infos.pausas(7) ||  q == infos.pausas(8) ||...
-          q == infos.pausas(9)
+          q == infos.pausas(3)
      
         bloco = bloco + 1;
         
