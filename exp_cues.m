@@ -184,6 +184,8 @@ for q = 1:infos.ntrials
         end
      end
      
+     
+     
      Eyelink('Command', 'clear_screen 0'); % Clear Host PC display from any previus drawing
      Eyelink('ImageTransfer', '/mnt/projetos/fovea/images/placeholders.bmp', 0, 0, 0, 0, 0, 0);  
      Eyelink('StartRecording');
@@ -375,14 +377,14 @@ for q = 1:infos.ntrials
             end
         end
 
-            
     % Desenha os placeholders e pf na tela
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('Flip', infos.win);
-     
+        
+        
     if participant.giveresp == true
         % Wait for button press
 %         ResponsePixx('StartNow', 1, [1 0 1 0 0], 1);
@@ -408,6 +410,8 @@ for q = 1:infos.ntrials
         if abort == true
             break;
         end
+  
+    
 
                % 45 = esquerda (sentido anti-horario) | 315 = direita (sentido horario)
           
@@ -418,7 +422,6 @@ for q = 1:infos.ntrials
                 %%% blue   [4] = bottom
                 %%% white  [5] = middle          
           
-    
     
      if   q == infos.pausas(1) ||  q == infos.pausas(2) ||...
           q == infos.pausas(3)
@@ -447,7 +450,8 @@ for q = 1:infos.ntrials
         end
         ResponsePixx('StopNow', 1, [0 0 0 0 0], 0);
                 
-    end    
+     end    
+    
     
     clear Textures
     

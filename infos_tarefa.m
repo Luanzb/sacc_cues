@@ -1,5 +1,5 @@
 
-sca; close all; clear;
+sca; close all; clear all; clc;
 PsychDefaultSetup(2);
   
 
@@ -27,13 +27,26 @@ Screen('Preference', 'SkipSyncTests', 1); %
 Screen('Preference', 'TextRenderer');
 Screen('Preference', 'Verbosity', 0);
 
-infos.ntrials              = 400; %48 % n�mero de tentativas
 infos.screen_num           = 0;
-infos.pausas               = (100:100:300); % 3 pausas em uma sessão 
-infos.pausas2              = (101:100:301);% 
 
-% infos.pausas               = (12:12:36); % 5 pausas em uma sessão 
-% infos.pausas2              = (13:12:37);% 
+
+if participant.exp == 1
+    infos.ntrials              = 400;
+    infos.pausas               = (100:100:300); % 3 pausas em uma sessão 
+    infos.pausas2              = (101:100:301);% 
+    
+else
+    
+    if participant.tr == false
+        infos.ntrials              = 48; %48 % n�mero de tentativas
+        infos.pausas               = (12:12:36); % 3 pausas em uma sessão 
+        infos.pausas2              = (13:12:37);% 
+    else
+        infos.ntrials              = 2;    
+    end
+    
+end
+
 
 infos.time                 = [0.025  0.5  1  0  0.0167]; 
 infos.fix_dur_t            = 0.5;  % Duration of fixation at ROI to start trial in secs
@@ -171,26 +184,36 @@ mat4 = [...
 ];
 
 
+if participant.exp == 1
+    rows = 24;
+    ll = 100;
+    lk = 400;
+else
+    rows = 2;
+    ll = 12;
+    lk = 48;
+end
+
 % add 24 vezes a matriz mat dentro dela mesma, gerando uma sessão com 960
 % tentativas.
-mat1          =[mat1;repmat(mat1,24,1)]; %2
+mat1          =[mat1;repmat(mat1,rows,1)]; %2
 matrix1 = mat1(randperm(size(mat1,1)),:); % aleatoriza as linhas
 
-mat2          =[mat2;repmat(mat2,24,1)];
+mat2          =[mat2;repmat(mat2,rows,1)];
 matrix2 = mat2(randperm(size(mat2,1)),:); % aleatoriza as linhas
 
-mat3          =[mat3;repmat(mat3,24,1)];
+mat3          =[mat3;repmat(mat3,rows,1)];
 matrix3 = mat3(randperm(size(mat3,1)),:); % aleatoriza as linhas
 
-mat4          =[mat4;repmat(mat4,24,1)];
+mat4          =[mat4;repmat(mat4,rows,1)];
 matrix4 = mat4(randperm(size(mat4,1)),:); % aleatoriza as linhas
 
 ordem_blocos = randperm(4);
 
 linha = 1;
-linhaa = 100; %12
+linhaa = ll; 
 
-infos.matrix = zeros(400,3); %48
+infos.matrix = zeros(lk,3); 
 
 for blocos = 1:4
     
@@ -204,10 +227,24 @@ for blocos = 1:4
         else
                 infos.matrix(linha:linhaa,:) = matrix4;    
         end
+  
+        linha = linha + ll; 
+        linhaa = linhaa + ll; 
     
-        linha = linha + 100; %12
-        linhaa = linhaa + 100; %12
-    
+end
+
+
+if participant.exp == 2 % treino
+    if participant.tr == true % condicao facil
+         mat1 = [...
+          1             2             2];
+      
+   mat3 = [... 
+          3             1             1];
+ 
+    mat = [mat1;mat3];
+    infos.matrix = mat(randperm(size(mat,1)),:); % aleatoriza as linhas
+    end
 end
 
 
@@ -314,7 +351,7 @@ infos.pista_direita  = zeros(infos.ntrials,1);
 infos.Alvo           = infos.matrix(:,3);   
 
 % target orientation
-degree_targetccw = 8.09;  % counterclockwise condition | shifted to the left
+degree_targetccw = 17.74;  % counterclockwise condition | shifted to the left
 degree_targetcw = 360 - degree_targetccw;  % clockwise condition | shifted to the right
 
 
@@ -453,21 +490,31 @@ matrix = infos.matrix(1:infos.ntrials,:);
 [g]           = gabor(infos);
 [aperture]    = FastMaskedNoiseDemo(infos, g);
 [disctexture] = disc(infos);
-[timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
 
-participant.eyefilename = 'express.edf'; 
-participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
-disp('Saving data files........')
-save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
-    [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix');
+if participant.exp == 1
+    [timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
+else
+    [Response] = exp_cues_treino(g,infos, aperture, disctexture,participant);
+end
+
+if participant.exp == 1 % Coleta de dados no exp
+    
+    participant.eyefilename = 'express.edf'; 
+    participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
+    disp('Saving data files........')
+    save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
+        [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix');
 
 
-        
-   if exist(participant.eyefilename,'file')
-         movefile(participant.eyefilename,sprintf('/mnt/projetos/sacc_cues/data/Subject%s/eyetracking/%s.edf',participant.strnum,participant.filename));
-   else
-         error('Eye-tracker data file not found!');
-   end
-        
-disp('All done!');
+
+       if exist(participant.eyefilename,'file')
+             movefile(participant.eyefilename,sprintf('/mnt/projetos/sacc_cues/data/Subject%s/eyetracking/%s.edf',participant.strnum,participant.filename));
+       else
+             error('Eye-tracker data file not found!');
+       end
+
+    disp('All done!');
+    
+end
+
 

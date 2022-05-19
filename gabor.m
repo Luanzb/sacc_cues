@@ -27,8 +27,8 @@ end
 
 % Spatial Frequency (Cycles Per Pixel)
 % One Cycle = Grey-Black-Grey-White-Grey i.e. One Black and One White Lobe
-numCycles = 5.5;
-freq = numCycles / gaborDimPix;
+numCycles = 5.5; % dividir numcycles pelo tamanho do est[imulo em dva me mostra a freq espacial desse est[imulo em angulo de visao
+freq = numCycles / gaborDimPix; % me da a freq espacial em pixels
 
 % Build a procedural gabor texture (Note: to get a "standard" Gabor patch
 % we set a grey background offset, disable normalisation, and set a
