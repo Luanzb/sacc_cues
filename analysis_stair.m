@@ -7,7 +7,7 @@
 
 condition = 1;
 UD_ndown = 3;
-UD_step_size = 1; 
+UD_step_size = 2.5; 
 UD_xmax = 60;
 UD_xmin = 0;
 PSI_prior_gamma = 0.5;

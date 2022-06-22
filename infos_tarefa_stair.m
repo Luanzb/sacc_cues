@@ -162,11 +162,11 @@ end
 
 %% STAIRCASES INFO
 
-infos.UD_step_size_down = 1;       
+infos.UD_step_size_down = 2.5; % first staircase: 2.5 | second staircase: 1      
 infos.UD_step_size_up = infos.UD_step_size_down;
 infos.UD_stop_criterion = 'trials';   
 infos.UD_stop_rule = infos.ntrials;
-infos.UD_start_value = 15.31;
+infos.UD_start_value = 15;
 infos.UD_xmax = 30;
 infos.UD_xmin = 0;
 

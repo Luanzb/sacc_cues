@@ -79,7 +79,7 @@ function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, partic
   
     %%
     
-    Response = zeros(400,6);
+    Response = zeros(960,6);
     bloco = 0;
     bloco2 = 0;
     abort = false;
@@ -129,8 +129,7 @@ for q = 1:infos.ntrials
     %%
      Eyelink('SetOfflineMode'); % Put tracker in idle/offline mode before drawing Host PC graphics and before recording
     
-     if q == 1 || q == infos.pausas2(1) ||  q == infos.pausas2(2) ||...
-                  q == infos.pausas2(3)
+     if q == 1 || any(infos.pausas2 == q)
               
         text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecera a seguir ENQUANTO aperta a tecla dourada (A)';
         DrawFormattedText(infos.win, text, 'center', 'center', [0,0,0]);
@@ -376,6 +375,37 @@ for q = 1:infos.ntrials
                 end
             end
         end
+        
+%         
+%         
+%     if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
+%         if q >= infos.cue_onoff(q,1) && q <= infos.cue_onoff(q,2)
+%             while 1
+%                 damn = Eyelink('CheckRecording');
+%                 if(damn ~= 0)
+% 
+%                     break;
+%                 end
+% 
+%                 if Eyelink('NewFloatSampleAvailable') > 0
+% 
+%                     % get the sample in the form of an event structure
+%                     evt = Eyelink('NewestFloatSample');
+%                     % if we do, get current gaze position from sample
+%                     x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
+%                     y_gaze = evt.gy(eye_used+1);
+%                     if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
+%                       
+%                        break; % break while loop to show stimulus
+%                         
+%                     elseif ~inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is not within fixation window
+%                         [timestamps.fix_on(q)] = GetSecs; % Reset fixation window timer
+%                     end
+%                 end
+%             end
+%         end
+%     end
+%     
 
     % Desenha os placeholders e pf na tela
     Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
@@ -423,8 +453,7 @@ for q = 1:infos.ntrials
                 %%% white  [5] = middle          
           
     
-     if   q == infos.pausas(1) ||  q == infos.pausas(2) ||...
-          q == infos.pausas(3)
+     if  any(infos.pausas == q)
      
         bloco = bloco + 1;
         

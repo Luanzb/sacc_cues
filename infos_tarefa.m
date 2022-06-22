@@ -31,9 +31,9 @@ infos.screen_num           = 0;
 
 
 if participant.exp == 1
-    infos.ntrials              = 400;
-    infos.pausas               = (100:100:300); % 3 pausas em uma sessão 
-    infos.pausas2              = (101:100:301);% 
+    infos.ntrials              = 960;
+    infos.pausas               = (48:48:912); % 3 pausas em uma sessão 
+    infos.pausas2              = (49:48:913);% 
     
 else
     
@@ -185,9 +185,9 @@ mat4 = [...
 
 
 if participant.exp == 1
-    rows = 24;
-    ll = 100;
-    lk = 400;
+    rows = 11;
+    ll = 48;
+    lk = 960;
 else
     rows = 2;
     ll = 12;
@@ -208,14 +208,17 @@ matrix3 = mat3(randperm(size(mat3,1)),:); % aleatoriza as linhas
 mat4          =[mat4;repmat(mat4,rows,1)];
 matrix4 = mat4(randperm(size(mat4,1)),:); % aleatoriza as linhas
 
-ordem_blocos = randperm(4);
+ordem = [1 2 3 4];
+ordem_blocos1 = repelem(ordem,5)';
+ordem_blocos = ordem_blocos1(randperm(size(ordem_blocos1,1)),:);
+
 
 linha = 1;
 linhaa = ll; 
 
 infos.matrix = zeros(lk,3); 
 
-for blocos = 1:4
+for blocos = 1:20
     
         
         if     ordem_blocos(blocos) == 1
@@ -256,8 +259,8 @@ if infos.refreshR== 120
     infos.nrows  = 168;
     infos.fponly = [3 4];
     
-    tg_onset     = 99:3:144;       % define em q loops o alvo será apresentado 
-    ordem        = randi(16,infos.ntrials,1);% cria 960 val. aleató. entre 16-1.
+    tg_onset     = 90:3:144;       % define em q loops o alvo será apresentado 
+    ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.
     
     SOAs         = zeros(infos.ntrials,1);   % vetor que sera preenchido abaixo
     offset_target = zeros(infos.ntrials,1);
