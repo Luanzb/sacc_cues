@@ -272,7 +272,7 @@ if infos.refreshR== 120
     
     
     for p = 1:length(ordem)
-        ordem2(p,1) = ordem(p) + 5; 
+        ordem2(p,1) = ordem(p) + 3; 
     end
     
     for z = 1:length(ordem)
