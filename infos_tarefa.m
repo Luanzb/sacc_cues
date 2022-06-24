@@ -259,8 +259,24 @@ if infos.refreshR== 120
     infos.nrows  = 168;
     infos.fponly = [3 4];
     
-    tg_onset     = 90:3:144;       % define em q loops o alvo será apresentado 
-    ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.
+    
+    if participant.median == 200    
+        
+        tg_onset     = 90:3:144;       % define em q loops o alvo será apresentado 
+        ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.
+                                                 % SOA + longo: 175 (+ 25 alvo)
+    elseif participant.median >= 175 && participant.median < 200
+        
+        tg_onset     = 90:3:141;       % define em q loops o alvo será apresentado 
+        ordem        = randi(16,infos.ntrials,1);% cria 960 val. aleató. entre 16-1.  
+                                                 % SOA + longo: 150 (+ 25 alvo)
+    elseif participant.median >= 150 && participant.median < 175 
+        
+         tg_onset     = 90:3:138;       % define em q loops o alvo será apresentado 
+        ordem        = randi(13,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.  
+                                                 % SOA + longo: 125 (+ 25 alvo)
+    end
+    
     
     SOAs         = zeros(infos.ntrials,1);   % vetor que sera preenchido abaixo
     offset_target = zeros(infos.ntrials,1);
