@@ -6,7 +6,7 @@ function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, partic
 
     %%% Eyetracking general setup
     EyelinkInit(0);
-    Eyelink('OpenFile', 'express'); % open temporary eyelink file
+    Eyelink('OpenFile', 'sacc_cues'); % open temporary eyelink file
 
     
     % Select which events are saved in the EDF file - include everything just in case

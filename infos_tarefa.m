@@ -518,7 +518,7 @@ end
 
 if participant.exp == 1 % Coleta de dados no exp
     
-    participant.eyefilename = 'express.edf'; 
+    participant.eyefilename = 'sacc_cues.edf'; 
     participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
     disp('Saving data files........')
     save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
