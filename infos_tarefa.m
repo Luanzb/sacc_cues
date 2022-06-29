@@ -2,6 +2,10 @@
 sca; close all; clear all; clc;
 PsychDefaultSetup(2);
   
+addpath(genpath('/mnt/projetos/sacc_cues/'))   
+addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
+addpath(genpath('/home/activis/Documents/MATLAB/'))   
+cd /home/activis/Documents/GitHub/sacc_cues/
 
 infos = struct;
 
@@ -376,7 +380,7 @@ infos.pista_direita  = zeros(infos.ntrials,1);
 infos.Alvo           = infos.matrix(:,3);   
 
 % target orientation
-degree_targetccw = 17.74;  % counterclockwise condition | shifted to the left
+degree_targetccw = participant.limiar;  % counterclockwise condition | shifted to the left
 degree_targetcw = 360 - degree_targetccw;  % clockwise condition | shifted to the right
 
 

@@ -106,7 +106,7 @@ if infos.refreshR == 120
     infos.fponly = [3 4];
    
     tg_onset = 90:3:144;    % define em quais loops o alvo será apresentado 
-    ordem = randi(19,infos.ntrials,1);  % cria valores aleatorios entre 16-1
+    ordem = randi(19,infos.ntrials,1);  % cria valores aleatorios entre 19-1
    
     SOAs = zeros(infos.ntrials,1);
     tg_offset = zeros(infos.ntrials,1);
@@ -162,11 +162,11 @@ end
 
 %% STAIRCASES INFO
 
-infos.UD_step_size_down = 2.5; % first staircase: 2.5 | second staircase: 1      
+infos.UD_step_size_down = participant.step_size_down; % first staircase: 2.5 | second staircase: 1      
 infos.UD_step_size_up = infos.UD_step_size_down;
 infos.UD_stop_criterion = 'trials';   
 infos.UD_stop_rule = infos.ntrials;
-infos.UD_start_value = 15;    
+infos.UD_start_value = participant.limiar;    
 infos.UD_xmax = 30;
 infos.UD_xmin = 0;
 

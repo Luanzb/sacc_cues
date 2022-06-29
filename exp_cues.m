@@ -90,10 +90,14 @@ try
 
 for q = 1:infos.ntrials
 
+    fix = zeros(168,1);
     
+     
     ble = 0;
     blee = 0; 
     
+    % define se ou em quantos flips (3 ao todo) o alvo cairia na vez de
+    % apresentacao do noise. variavel blee recebe esse valor
     for vrau = 1:3
         if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
             blee = blee + 1;
@@ -101,7 +105,7 @@ for q = 1:infos.ntrials
         ble = ble + 1;
     end
 
-    
+    % 
     noise_gabor = infos.show_noise_gabor(blee+1:infos.SOA(q,4)+blee);
     sub = 168 - (size(noise_gabor));
     noise_gabor(length(noise_gabor)+1:length(noise_gabor)+sub(1)) = 1;
@@ -294,19 +298,19 @@ for q = 1:infos.ntrials
                 Screen('DrawTextures', infos.win, texRR, [], infos.coordR,...
                 orient(b,2), 0,1,[],[],kPsychDontDoRotation, g(b).propertiesMat');
             
-            else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
-                
-                Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                [],infos.filtmode,infos.galpha, [], []);
-                Screen('DrawTextures', infos.win,[aperture disctexture],...
-                [], infos.coordL, [], 0, [],infos.grey);
-
-                Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
-                infos.filtmode, infos.galpha, [], []);
-                Screen('DrawTextures', infos.win, [aperture disctexture],...
-                [], infos.coordR, [], 0,[],infos.grey);
+%             else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
+%                 
+%                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+%                 Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
+%                 [],infos.filtmode,infos.galpha, [], []);
+%                 Screen('DrawTextures', infos.win,[aperture disctexture],...
+%                 [], infos.coordL, [], 0, [],infos.grey);
+% 
+%                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+%                 Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
+%                 infos.filtmode, infos.galpha, [], []);
+%                 Screen('DrawTextures', infos.win, [aperture disctexture],...
+%                 [], infos.coordR, [], 0,[],infos.grey);
             end
             
         end
@@ -344,6 +348,38 @@ for q = 1:infos.ntrials
        end
        
         Response(q,6) = Response(q,5) - Response(q,3); % SOA
+        
+        
+%       
+%     if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
+%             while 1
+%                 damn = Eyelink('CheckRecording');
+%                 if(damn ~= 0)
+% 
+%                     break;
+%                 end
+% 
+%                 if Eyelink('NewFloatSampleAvailable') > 0
+% 
+%                     % get the sample in the form of an event structure
+%                     evt = Eyelink('NewestFloatSample');
+%                     % if we do, get current gaze position from sample
+%                     x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
+%                     y_gaze = evt.gy(eye_used+1);
+%                     
+%                     if b >= infos.cue_onoff(q,1) && b <= infos.cue_onoff(q,2)
+%                     if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
+%                         fix(q,1) = 1;
+%                         
+%                        break; % break while loop to show stimulus
+%                     
+%                     else
+%                          break; % break while loop to show stimulus
+%                     end
+%                     end
+%                 end
+%             end
+%     end
        
     end
     
@@ -379,37 +415,6 @@ for q = 1:infos.ntrials
             end
         end
         
-        
-        
-    if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
-        if q >= infos.cue_onoff(q,1) && q <= infos.cue_onoff(q,2)
-            while 1
-                damn = Eyelink('CheckRecording');
-                if(damn ~= 0)
-
-                    break;
-                end
-
-                if Eyelink('NewFloatSampleAvailable') > 0
-
-                    % get the sample in the form of an event structure
-                    evt = Eyelink('NewestFloatSample');
-                    % if we do, get current gaze position from sample
-                    x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-                    y_gaze = evt.gy(eye_used+1);
-                    if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
-                       if (GetSecs - timestamps.fix_on(q)) >= 0.1 % If gaze duration >= minimum fixation window time (fxateTime)
-                
-                       break; % break while loop to show stimulus
-                        
-                    elseif ~inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is not within fixation window
-                        [timestamps.fix_on(q)] = GetSecs; % Reset fixation window timer
-                       end
-                    end
-                end
-            end
-        end
-    end
     
 
     % Desenha os placeholders e pf na tela
