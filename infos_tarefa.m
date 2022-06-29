@@ -257,7 +257,7 @@ end
 
 infos.refreshR   = Screen('FrameRate',infos.screenNumber);
 
-%if infos.refreshR== 120
+if infos.refreshR== 120
 
     infos.loops  = 168; 
     infos.nrows  = 168;
@@ -334,38 +334,38 @@ infos.refreshR   = Screen('FrameRate',infos.screenNumber);
     
     ng = [1,1,1,0,0,0]';
     infos.show_noise_gabor = [ng;repmat(ng,27,1)];
-%    
-% else
-%     
-%     infos.loops       = 84; 
-%     infos.nrows       = 84; 
-%     infos.fponly      = [1 2];
-%         
-%     tg_onset          = 51:3:72; 
-%     ordem             = randi(8,960,1);      
-%     SOAs              = zeros(960,1); 
-%     for i             = 1:length(ordem)
-%         SOAs(i)       = tg_onset(ordem(i));
-%     end
-%     infos.SOA         = [SOAs  ordem];      
-%        
-%     cue_onset         = zeros(960,1);
-%     cue_offset        = zeros(960,1);
-%     for t             = 1:length(ordem)
-%         cue_onset(t)  = infos.SOA(t,1)-infos.SOA(t,2);
-%         cue_offset(t) = cue_onset(t) + 6;
-%     end  
-%     infos.cue_onoff   = [cue_onset  cue_offset];
-%     
-%     infos.startgap    = zeros(960,1);
-%     for w             = 1:length(ordem)
-%         infos.startgap(w) = infos.cue_onoff(w,1) - 12; 
-%     end
-%     
-%     ng = [1,0]';
-%     infos.show_noise_gabor = [ng;repmat(ng,41,1)];
-%     
-% end
+   
+else
+    
+    infos.loops       = 84; 
+    infos.nrows       = 84; 
+    infos.fponly      = [1 2];
+        
+    tg_onset          = 51:3:72; 
+    ordem             = randi(8,960,1);      
+    SOAs              = zeros(960,1); 
+    for i             = 1:length(ordem)
+        SOAs(i)       = tg_onset(ordem(i));
+    end
+    infos.SOA         = [SOAs  ordem];      
+       
+    cue_onset         = zeros(960,1);
+    cue_offset        = zeros(960,1);
+    for t             = 1:length(ordem)
+        cue_onset(t)  = infos.SOA(t,1)-infos.SOA(t,2);
+        cue_offset(t) = cue_onset(t) + 6;
+    end  
+    infos.cue_onoff   = [cue_onset  cue_offset];
+    
+    infos.startgap    = zeros(960,1);
+    for w             = 1:length(ordem)
+        infos.startgap(w) = infos.cue_onoff(w,1) - 12; 
+    end
+    
+    ng = [1,0]';
+    infos.show_noise_gabor = [ng;repmat(ng,41,1)];
+    
+end
 
 
 
@@ -383,7 +383,7 @@ infos.Alvo           = infos.matrix(:,3);
 degree_targetccw = participant.limiar;  % counterclockwise condition | shifted to the left
 degree_targetcw = 360 - degree_targetccw;  % clockwise condition | shifted to the right
 
-
+infos.cue_size = a3; 
 % define o tipo de pista, lado e orienta��o do alvo para a respectiva
 % tentativa.
 for q = 1:infos.ntrials
@@ -527,7 +527,7 @@ else
     if participant.tr == false
         [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant);
     else
-        exp_cues_treino_facil(g,infos, aperture, disctexture,participant);
+        exp_cues_treino_facil(g,infos, aperture, disctexture);
     end
 end
 

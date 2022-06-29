@@ -30,7 +30,7 @@ noise = struct;
     Screen('FillOval', aperture, [255 255 255 0], objRect);
     
     
-   % if infos.refreshR == 120
+    if infos.refreshR == 120
       
          cont = 1;
         
@@ -51,26 +51,26 @@ noise = struct;
               cont = cont  + 3;
               
          end         
-%        
-%     else
-%         
-%        number_noises = 42;
-%        cont = 0;
-%         for a = 1:number_noises
-%             cont = cont + 1;
-%             if a == 1
-%                 noise(a,1).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4); 
-%                 noise(a,2).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
-%             else
-%                 noise(cont,1).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
-%                 noise(cont,2).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
-%             end
-%             cont = cont + 1;
-%             noise(cont,1).noiseimg = g.gabortex;
-%             noise(cont,2).noiseimg = g.gabortex;   
-%         end  
-%        
-%     end
+       
+    else
+        
+       number_noises = 42;
+       cont = 0;
+        for a = 1:number_noises
+            cont = cont + 1;
+            if a == 1
+                noise(a,1).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4); 
+                noise(a,2).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
+            else
+                noise(cont,1).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
+                noise(cont,2).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
+            end
+            cont = cont + 1;
+            noise(cont,1).noiseimg = g.gabortex;
+            noise(cont,2).noiseimg = g.gabortex;   
+        end  
+       
+    end
     
     
     
