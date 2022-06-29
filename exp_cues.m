@@ -351,35 +351,35 @@ for q = 1:infos.ntrials
         
         
       
-    if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
-        if b >= infos.cue_onoff(q,1) && b <= infos.cue_onoff(q,2)
-            while 1
-                damn = Eyelink('CheckRecording');
-                if(damn ~= 0)
+        if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
+            if b >= infos.cue_onoff(q,1) && b <= infos.cue_onoff(q,2)
+                while 1
+                    damn = Eyelink('CheckRecording');
+                    if(damn ~= 0)
 
-                    break;
-                end
+                        break;
+                    end
 
-                if Eyelink('NewFloatSampleAvailable') > 0
+                    if Eyelink('NewFloatSampleAvailable') > 0
 
-                    % get the sample in the form of an event structure
-                    evt = Eyelink('NewestFloatSample');
-                    % if we do, get current gaze position from sample
-                    x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-                    y_gaze = evt.gy(eye_used+1);
-                    
-                    if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
-                        fix(b,1) = 1;
-                        
-                       break; % break while loop to show stimulus
-                    
-                    else
-                       break; % break while loop to show stimulus
+                        % get the sample in the form of an event structure
+                        evt = Eyelink('NewestFloatSample');
+                        % if we do, get current gaze position from sample
+                        x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
+                        y_gaze = evt.gy(eye_used+1);
+
+                        if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
+                            fix(b,1) = 1;
+
+                           break; % break while loop to show stimulus
+
+                        else
+                           break; % break while loop to show stimulus
+                        end
                     end
                 end
             end
         end
-    end
        
     end
     

@@ -5,7 +5,7 @@ PsychDefaultSetup(2);
 addpath(genpath('/mnt/projetos/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/MATLAB/'))   
-cd /home/activis/Documents/GitHub/sacc_cues/
+%cd /home/activis/Documents/GitHub/sacc_cues/
 
 infos = struct;
 
@@ -257,7 +257,7 @@ end
 
 infos.refreshR   = Screen('FrameRate',infos.screenNumber);
 
-if infos.refreshR== 120
+%if infos.refreshR== 120
 
     infos.loops  = 168; 
     infos.nrows  = 168;
@@ -334,38 +334,38 @@ if infos.refreshR== 120
     
     ng = [1,1,1,0,0,0]';
     infos.show_noise_gabor = [ng;repmat(ng,27,1)];
-   
-else
-    
-    infos.loops       = 84; 
-    infos.nrows       = 84; 
-    infos.fponly      = [1 2];
-        
-    tg_onset          = 51:3:72; 
-    ordem             = randi(8,960,1);      
-    SOAs              = zeros(960,1); 
-    for i             = 1:length(ordem)
-        SOAs(i)       = tg_onset(ordem(i));
-    end
-    infos.SOA         = [SOAs  ordem];      
-       
-    cue_onset         = zeros(960,1);
-    cue_offset        = zeros(960,1);
-    for t             = 1:length(ordem)
-        cue_onset(t)  = infos.SOA(t,1)-infos.SOA(t,2);
-        cue_offset(t) = cue_onset(t) + 6;
-    end  
-    infos.cue_onoff   = [cue_onset  cue_offset];
-    
-    infos.startgap    = zeros(960,1);
-    for w             = 1:length(ordem)
-        infos.startgap(w) = infos.cue_onoff(w,1) - 12; 
-    end
-    
-    ng = [1,0]';
-    infos.show_noise_gabor = [ng;repmat(ng,41,1)];
-    
-end
+%    
+% else
+%     
+%     infos.loops       = 84; 
+%     infos.nrows       = 84; 
+%     infos.fponly      = [1 2];
+%         
+%     tg_onset          = 51:3:72; 
+%     ordem             = randi(8,960,1);      
+%     SOAs              = zeros(960,1); 
+%     for i             = 1:length(ordem)
+%         SOAs(i)       = tg_onset(ordem(i));
+%     end
+%     infos.SOA         = [SOAs  ordem];      
+%        
+%     cue_onset         = zeros(960,1);
+%     cue_offset        = zeros(960,1);
+%     for t             = 1:length(ordem)
+%         cue_onset(t)  = infos.SOA(t,1)-infos.SOA(t,2);
+%         cue_offset(t) = cue_onset(t) + 6;
+%     end  
+%     infos.cue_onoff   = [cue_onset  cue_offset];
+%     
+%     infos.startgap    = zeros(960,1);
+%     for w             = 1:length(ordem)
+%         infos.startgap(w) = infos.cue_onoff(w,1) - 12; 
+%     end
+%     
+%     ng = [1,0]';
+%     infos.show_noise_gabor = [ng;repmat(ng,41,1)];
+%     
+% end
 
 
 
@@ -524,7 +524,11 @@ SOA = infos.SOA(1:infos.ntrials,:);
 if participant.exp == 1
     [timestamps,Response,noise_gabor,fix]    = exp_cues(g,infos, aperture, disctexture, participant);
 else
-    [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant);
+    if participant.tr == false
+        [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant);
+    else
+        exp_cues_treino_facil(g,infos, aperture, disctexture,participant);
+    end
 end
 
 if participant.exp == 1 % Coleta de dados no exp
