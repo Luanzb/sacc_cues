@@ -522,7 +522,7 @@ SOA = infos.SOA(1:infos.ntrials,:);
 [disctexture] = disc(infos);
 
 if participant.exp == 1
-    [timestamps,Response,noise_gabor]    = exp_cues(g,infos, aperture, disctexture, participant);
+    [timestamps,Response,noise_gabor,fix]    = exp_cues(g,infos, aperture, disctexture, participant);
 else
     [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant);
 end

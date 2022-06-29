@@ -1,4 +1,4 @@
-function [timestamps,Response, noise_gabor] = exp_cues(g,infos, aperture, disctexture, participant)
+function [timestamps,Response, noise_gabor,fix] = exp_cues(g,infos, aperture, disctexture, participant)
 
     FlushEvents;
     ListenChar(2);
@@ -79,7 +79,7 @@ function [timestamps,Response, noise_gabor] = exp_cues(g,infos, aperture, discte
   
     %%
     
-    Response = zeros(960,6);
+    Response = zeros(960,7);
     bloco = 0;
     bloco2 = 0;
     abort = false;
@@ -350,36 +350,36 @@ for q = 1:infos.ntrials
         Response(q,6) = Response(q,5) - Response(q,3); % SOA
         
         
-%       
-%     if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
-%             while 1
-%                 damn = Eyelink('CheckRecording');
-%                 if(damn ~= 0)
-% 
-%                     break;
-%                 end
-% 
-%                 if Eyelink('NewFloatSampleAvailable') > 0
-% 
-%                     % get the sample in the form of an event structure
-%                     evt = Eyelink('NewestFloatSample');
-%                     % if we do, get current gaze position from sample
-%                     x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-%                     y_gaze = evt.gy(eye_used+1);
-%                     
-%                     if b >= infos.cue_onoff(q,1) && b <= infos.cue_onoff(q,2)
-%                     if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
-%                         fix(q,1) = 1;
-%                         
-%                        break; % break while loop to show stimulus
-%                     
-%                     else
-%                          break; % break while loop to show stimulus
-%                     end
-%                     end
-%                 end
-%             end
-%     end
+      
+    if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
+        if b >= infos.cue_onoff(q,1) && b <= infos.cue_onoff(q,2)
+            while 1
+                damn = Eyelink('CheckRecording');
+                if(damn ~= 0)
+
+                    break;
+                end
+
+                if Eyelink('NewFloatSampleAvailable') > 0
+
+                    % get the sample in the form of an event structure
+                    evt = Eyelink('NewestFloatSample');
+                    % if we do, get current gaze position from sample
+                    x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
+                    y_gaze = evt.gy(eye_used+1);
+                    
+                    if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
+                        fix(b,1) = 1;
+                        
+                       break; % break while loop to show stimulus
+                    
+                    else
+                       break; % break while loop to show stimulus
+                    end
+                end
+            end
+        end
+    end
        
     end
     
@@ -418,11 +418,28 @@ for q = 1:infos.ntrials
     
 
     % Desenha os placeholders e pf na tela
-    Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
-    Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
-    Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
-    Screen('Flip', infos.win);
+   
+    if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao
+        Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
+        if sum(fix(:,1)) <13
+            Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize, [1,0,0],[],2,1); % red
+            Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
+            Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
+            Screen('Flip', infos.win);
+            Response(q,7) = 1;
+        else
+            Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
+            Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
+            Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
+            Screen('Flip', infos.win);
+        end
+    else
+        Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
+        Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize,infos.white,[],2,1);
+        Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
+        Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
+        Screen('Flip', infos.win);
+    end
         
         
     if participant.giveresp == true
