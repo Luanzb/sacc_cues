@@ -1,4 +1,4 @@
-function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, participant)
+function [timestamps,Response, noise_gabor] = exp_cues(g,infos, aperture, disctexture, participant)
 
     FlushEvents;
     ListenChar(2);
@@ -6,7 +6,7 @@ function [timestamps,Response] = exp_cues(g,infos, aperture, disctexture, partic
 
     %%% Eyetracking general setup
     EyelinkInit(0);
-    Eyelink('OpenFile', 'sacc_cues'); % open temporary eyelink file
+    Eyelink('OpenFile', 'express'); % open temporary eyelink file
 
     
     % Select which events are saved in the EDF file - include everything just in case
@@ -92,7 +92,7 @@ for q = 1:infos.ntrials
 
     
     ble = 0;
-    blee = 0;
+    blee = 0; 
     
     for vrau = 1:3
         if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
@@ -101,6 +101,11 @@ for q = 1:infos.ntrials
         ble = ble + 1;
     end
 
+    
+    noise_gabor = infos.show_noise_gabor(blee+1:infos.SOA(q,4)+blee);
+    sub = 168 - (size(noise_gabor));
+    noise_gabor(length(noise_gabor)+1:length(noise_gabor)+sub(1)) = 1;
+    
     blee2 = abs(blee - 1);
          
     
@@ -266,42 +271,40 @@ for q = 1:infos.ntrials
         end
         
         
-        if infos.show_noise_gabor(b) == 1
+        if noise_gabor(b) == 1
 
             Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
             Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-            orient(b,1),infos.filtmode,infos.galpha, [], [],...
-            kPsychDontDoRotation, g(b).propertiesMat');
+            [],infos.filtmode,infos.galpha, [], []);
             Screen('DrawTextures', infos.win,[aperture disctexture],...
             [], infos.coordL, [], 0, [],infos.grey);
 
             Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            Screen('DrawTextures', infos.win, texR, [], infos.coordR, orient(b,2),...
-            infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g(b).propertiesMat');
+            Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
+            infos.filtmode, infos.galpha, [], []);
             Screen('DrawTextures', infos.win, [aperture disctexture],...
             [], infos.coordR, [], 0,[],infos.grey);
                  
         else 
             if b <= infos.SOA(q,4)
-                texL = g.gabortex; texR = g.gabortex;
+               texLL = g.gabortex; texRR = g.gabortex;
                 Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-                Screen('DrawTextures', infos.win, texL, [], infos.coordL,...
+                Screen('DrawTextures', infos.win, texLL, [], infos.coordL,...
                 orient(b,1),0,1,[],[], kPsychDontDoRotation, g(b).propertiesMat');
-                Screen('DrawTextures', infos.win, texR, [], infos.coordR,...
+                Screen('DrawTextures', infos.win, texRR, [], infos.coordR,...
                 orient(b,2), 0,1,[],[],kPsychDontDoRotation, g(b).propertiesMat');
             
             else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
                 
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
                 Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                orient(b,1),infos.filtmode,infos.galpha, [], [],...
-                kPsychDontDoRotation, g(b).propertiesMat');
+                [],infos.filtmode,infos.galpha, [], []);
                 Screen('DrawTextures', infos.win,[aperture disctexture],...
                 [], infos.coordL, [], 0, [],infos.grey);
 
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texR, [], infos.coordR, orient(b,2),...
-                infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g(b).propertiesMat');
+                Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
+                infos.filtmode, infos.galpha, [], []);
                 Screen('DrawTextures', infos.win, [aperture disctexture],...
                 [], infos.coordR, [], 0,[],infos.grey);
             end

@@ -16,9 +16,9 @@ contrast = 1;
 aspectRatio = 1.0;
 
 val = (0:0.00557:2)'; % cria 360 valores entre 1 e 2
-phase = zeros(168,1);
+phase = zeros(250,1); % 168
 
-for gg = 1:168
+for gg = 1:250 % 168
     val2 = randi(length(val)); % escolhe um valor aleatorio entre 1 e 360
     card = val(val2); % na posicao val2, a variavel card recebera o valor de val
     ph = pi/card;
@@ -41,7 +41,7 @@ preContrastMultiplier = 0.5;
 g.gabortex = CreateProceduralGabor(infos.win, gaborDimPix, gaborDimPix, [],...
     backgroundOffset, disableNorm, preContrastMultiplier);
 
-for bb = 1:168
+for bb = 1:250 % 168
     % Randomise the phase of the Gabors and make a properties matrix.
     g(bb).propertiesMat = [phase(bb,1), freq, sigma, contrast, aspectRatio, 0, 0, 0];
 end

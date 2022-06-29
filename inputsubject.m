@@ -45,7 +45,7 @@ col_tr = questdlg('', ...
                 participant.strnum = '1';
             end
             
-            participant.median = argindlg{5};
+            participant.median = str2double(argindlg{5});
             if isempty(participant.median)
                 participant.median = 200;
             end

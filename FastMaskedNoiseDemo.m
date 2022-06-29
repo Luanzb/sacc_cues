@@ -34,10 +34,11 @@ noise = struct;
       
          cont = 1;
         
+       
          for ii = 1:100 % 56
               noise1(ii,1).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4); 
               noise1(ii,2).noiseimg=imgaussfilt((50*randn(rectSize, rectSize) + 128),4);
-              
+               
               
               noise(cont,  1).noiseimg = noise1(ii,1).noiseimg;
               noise(cont+1,1).noiseimg = noise1(ii,1).noiseimg;

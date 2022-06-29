@@ -1,4 +1,4 @@
-function [Response] = exp_cues_treino(g,infos, aperture, disctexture,participant)
+function [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant)
 
    
     % Hide mouse cursor
@@ -17,13 +17,14 @@ function [Response] = exp_cues_treino(g,infos, aperture, disctexture,participant
 
 try
     
-    
+       targ = zeros(60,1);
+
 
 for q = 1:infos.ntrials
 
     
     ble = 0;
-    blee = 0;
+    blee = 0; 
     
     for vrau = 1:3
         if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
@@ -32,8 +33,14 @@ for q = 1:infos.ntrials
         ble = ble + 1;
     end
 
+    
+    noise_gabor = infos.show_noise_gabor(blee+1:infos.SOA(q,4)+blee);
+    sub = 168 - (size(noise_gabor));
+    noise_gabor(length(noise_gabor)+1:length(noise_gabor)+sub(1)) = 1;
+    
     blee2 = abs(blee - 1);
          
+    
     
     dotsize = repmat(infos.dotSize,infos.nrows,2);
     dotsize(infos.cue_onoff(q,1):infos.nrows,1) = infos.leftcuesize(q);
@@ -127,6 +134,29 @@ for q = 1:infos.ntrials
     Screen('Flip', infos.win);
     WaitSecs(0.5);
     
+    if participant.tr == true 
+          % Wait for button press
+                ResponsePixx('StartNow', 1, [0 1 0 0 0], 1);
+                while 1
+                    [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
+                        if ~isempty(buttonStates)
+                            if buttonStates(1,2) == 1 % yellow button
+                                break;
+                            elseif buttonStates(1,4) == 1 % blue button | sai do exp
+                                abort = true;
+                                break
+                            end
+                        end
+                end
+                ResponsePixx('StopNow', 1, [0 0 0 0 0], 0);
+             
+
+            if abort == true
+                break;
+            end
+            
+    end
+    
     
     %%
     
@@ -151,46 +181,50 @@ for q = 1:infos.ntrials
         end
         
         
-        if infos.show_noise_gabor(b) == 1
+        if noise_gabor(b) == 1
 
             Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
             Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-            orient(b,1),infos.filtmode,infos.galpha, [], [],...
-            kPsychDontDoRotation, g(b).propertiesMat');
+            [],infos.filtmode,infos.galpha, [], []);
             Screen('DrawTextures', infos.win,[aperture disctexture],...
             [], infos.coordL, [], 0, [],infos.grey);
 
             Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            Screen('DrawTextures', infos.win, texR, [], infos.coordR, orient(b,2),...
-            infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g(b).propertiesMat');
+            Screen('DrawTextures', infos.win, texR, [], infos.coordR,[],...
+            infos.filtmode, infos.galpha, [], []);
             Screen('DrawTextures', infos.win, [aperture disctexture],...
             [], infos.coordR, [], 0,[],infos.grey);
                  
         else 
             if b <= infos.SOA(q,4)
-                texL = g.gabortex; texR = g.gabortex;
+                texLL = g.gabortex; texRR = g.gabortex;
                 Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
-                Screen('DrawTextures', infos.win, texL, [], infos.coordL,...
+                Screen('DrawTextures', infos.win, texLL, [], infos.coordL,...
                 orient(b,1),0,1,[],[], kPsychDontDoRotation, g(b).propertiesMat');
-                Screen('DrawTextures', infos.win, texR, [], infos.coordR,...
+                Screen('DrawTextures', infos.win, texRR, [], infos.coordR,...
                 orient(b,2), 0,1,[],[],kPsychDontDoRotation, g(b).propertiesMat');
             
             else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
                 
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
                 Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                orient(b,1),infos.filtmode,infos.galpha, [], [],...
-                kPsychDontDoRotation, g(b).propertiesMat');
+                [],infos.filtmode,infos.galpha, [], []);
                 Screen('DrawTextures', infos.win,[aperture disctexture],...
                 [], infos.coordL, [], 0, [],infos.grey);
 
                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texR, [], infos.coordR, orient(b,2),...
-                infos.filtmode, infos.galpha, [], [], kPsychDontDoRotation, g(b).propertiesMat');
+                Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
+                infos.filtmode, infos.galpha, [], []);
                 Screen('DrawTextures', infos.win, [aperture disctexture],...
                 [], infos.coordR, [], 0,[],infos.grey);
             end
             
+                % verifica se o alvo foi apresentado no flip de gabor.
+            if orient(b,1) ~= 0
+                targ(q,1) = 1;
+            elseif orient(b,2) ~= 0
+                targ(q,1) = 1;
+            end
         end
 
         
@@ -211,6 +245,30 @@ for q = 1:infos.ntrials
        elseif b == infos.cue_onoff(q,1)
            Screen('Flip', infos.win, now+participant.tempo, dclear(b));
             Response(q,3) = toc;
+            
+             if participant.tr == true 
+          % Wait for button press
+                ResponsePixx('StartNow', 1, [0 1 0 0 0], 1);
+                while 1
+                    [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
+                        if ~isempty(buttonStates)
+                            if buttonStates(1,2) == 1 % yellow button
+                                break;
+                            elseif buttonStates(1,4) == 1 % blue button | sai do exp
+                                abort = true;
+                                break
+                            end
+                        end
+                end
+                ResponsePixx('StopNow', 1, [0 0 0 0 0], 0);
+             
+
+            if abort == true
+                break;
+            end
+            
+             end
+    
        elseif b == infos.cue_onoff(q,2)
            Screen('Flip', infos.win, now+participant.tempo, dclear(b));
            Response(q,4) = toc;
@@ -218,6 +276,31 @@ for q = 1:infos.ntrials
            Screen('Flip', infos.win, now+participant.tempo, dclear(b));
             Response(q,5) = toc; % inicio apresentacao do alvo
             WaitSecs(participant.tempo2);
+            
+             if participant.tr == true 
+                 if b == infos.SOA(q,1)
+                    % Wait for button press
+                    ResponsePixx('StartNow', 1, [0 1 0 0 0], 1);
+                    while 1
+                        [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
+                            if ~isempty(buttonStates)
+                                if buttonStates(1,2) == 1 % yellow button
+                                    break;
+                                elseif buttonStates(1,4) == 1 % blue button | sai do exp
+                                    abort = true;
+                                    break
+                                end
+                            end
+                    end
+                    ResponsePixx('StopNow', 1, [0 0 0 0 0], 0);
+
+
+                    if abort == true
+                       break;
+                     end
+                 end
+             end
+    
        else
             Screen('Flip', infos.win, now+participant.tempo, dclear(b));
        end

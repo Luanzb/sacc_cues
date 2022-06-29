@@ -259,24 +259,30 @@ if infos.refreshR== 120
     infos.nrows  = 168;
     infos.fponly = [3 4];
     
-    
-    if participant.median == 200    
+    if participant.exp == 1
+        if participant.median == 200    
+
+            tg_onset     = 90:3:144;       % define em q loops o alvo será apresentado 
+            ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.
+                                                     % SOA + longo: 175 (+ 25 alvo)
+        elseif participant.median >= 175 && participant.median < 200
+
+            tg_onset     = 90:3:141;       % define em q loops o alvo será apresentado 
+            ordem        = randi(16,infos.ntrials,1);% cria 960 val. aleató. entre 16-1.  
+                                                     % SOA + longo: 150 (+ 25 alvo)
+        elseif participant.median >= 150 && participant.median < 175 
+
+             tg_onset     = 90:3:138;       % define em q loops o alvo será apresentado 
+            ordem        = randi(13,infos.ntrials,1);% cria 960 val. aleató. entre 13-1.  
+                                                     % SOA + longo: 125 (+ 25 alvo)
+        end
         
-        tg_onset     = 90:3:144;       % define em q loops o alvo será apresentado 
+    else
+        
+        tg_onset     = 90:3:144;       % define Respem q loops o alvo será apresentado 
         ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.
                                                  % SOA + longo: 175 (+ 25 alvo)
-    elseif participant.median >= 175 && participant.median < 200
-        
-        tg_onset     = 90:3:141;       % define em q loops o alvo será apresentado 
-        ordem        = randi(16,infos.ntrials,1);% cria 960 val. aleató. entre 16-1.  
-                                                 % SOA + longo: 150 (+ 25 alvo)
-    elseif participant.median >= 150 && participant.median < 175 
-        
-         tg_onset     = 90:3:138;       % define em q loops o alvo será apresentado 
-        ordem        = randi(13,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.  
-                                                 % SOA + longo: 125 (+ 25 alvo)
     end
-    
     
     SOAs         = zeros(infos.ntrials,1);   % vetor que sera preenchido abaixo
     offset_target = zeros(infos.ntrials,1);
@@ -288,7 +294,7 @@ if infos.refreshR== 120
     
     
     for p = 1:length(ordem)
-        ordem2(p,1) = ordem(p) + 3; 
+        ordem2(p,1) = ordem(p) + 2; 
     end
     
     for z = 1:length(ordem)
@@ -505,24 +511,25 @@ for q = 1:infos.ntrials
 end
 
 matrix = infos.matrix(1:infos.ntrials,:);
+SOA = infos.SOA(1:infos.ntrials,:);
 
 [g]           = gabor(infos);
 [aperture]    = FastMaskedNoiseDemo(infos, g);
 [disctexture] = disc(infos);
 
 if participant.exp == 1
-    [timestamps,Response]    = exp_cues(g,infos, aperture, disctexture, participant);
+    [timestamps,Response,noise_gabor]    = exp_cues(g,infos, aperture, disctexture, participant);
 else
-    [Response] = exp_cues_treino(g,infos, aperture, disctexture,participant);
+    [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant);
 end
 
 if participant.exp == 1 % Coleta de dados no exp
     
-    participant.eyefilename = 'sacc_cues.edf'; 
+    participant.eyefilename = 'express.edf'; 
     participant.filename = sprintf('Sacc_sub%s_ses%s_%s',participant.strnum,participant.strses,datestr(now,'yyyymmdd-HHMM'));       
     disp('Saving data files........')
     save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
-        [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix');
+        [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix', 'SOA');
 
 
 
