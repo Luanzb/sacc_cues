@@ -53,7 +53,7 @@ for q = 1:2
         clear buttons
         
     else
-        DrawFormattedText(infos.win,'--- Pista Periferica ---', 'center','center', infos.black);
+        DrawFormattedText(infos.win,'--- Pista Periférica ---', 'center','center', infos.black);
         Screen('Flip', infos.win);
         WaitSecs(0.5)
         clear buttons

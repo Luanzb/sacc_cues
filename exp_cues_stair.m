@@ -246,7 +246,7 @@ for q = 1:infos.ntrials
     Eyelink('SetOfflineMode'); % Put tracker in idle/offline mode before drawing Host PC graphics and before recording
 
     if q == 1
-        text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecera a seguir ENQUANTO aperta a tecla dourada (A)';
+        text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecerá a seguir ENQUANTO aperta a tecla dourada (A)';
         DrawFormattedText(infos.win, text, 'center', 'center', [0,0,0]);
         Screen('Flip', infos.win);
         WaitSecs(3);

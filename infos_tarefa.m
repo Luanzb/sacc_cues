@@ -264,7 +264,7 @@ if infos.refreshR== 120
     infos.fponly = [3 4];
     
     if participant.exp == 1
-        if participant.median == 200    
+        if participant.median >= 200    
 
             tg_onset     = 90:3:144;       % define em q loops o alvo será apresentado 
             ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.

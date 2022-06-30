@@ -11,9 +11,10 @@ col_tr = questdlg('', ...
 
              argindlg = inputdlg({...
             'Número do voluntário',...
-            'Gênero (M/F/E)',...
+            'Gênero (M/F)',...
             'Idade',...
-            'Sessao',...
+            'Olho dominante (E/D)',...
+            'Sessão',...
             'Mediana SRT',...
             'Limiar'},...
             '',1);
@@ -41,29 +42,36 @@ col_tr = questdlg('', ...
                 participant.dage = 0;
             end
 
-            participant.strses = argindlg{4};
+            participant.eye = upper(argindlg{4});
+            if isempty(participant.eye)
+                participant.strnum = 'EMPTY';
+            end
+            
+             participant.strses = argindlg{5};
             if isempty(participant.strses)
                 participant.strnum = '1';
             end
             
-            participant.median = str2double(argindlg{5});
+            participant.median = argindlg{6};
+            participant.med = str2double(argindlg{6});
             if isempty(participant.median)
-                participant.median = 200;
+                participant.med = 200;
             end
             
-            participant.limiar = str2double(argindlg{6});
+            participant.limiar = argindlg{7};
+            participant.lim = str2double(argindlg{7});
             if isempty(participant.limiar)
-                participant.limiar = 30;
+                participant.lim = 30;
             end
 
 
             train_answer = questdlg('Coletar respostas?', ...
                 '', ...
-                'Sim', 'Nao','');
+                'Sim', 'Não','');
             switch train_answer
                 case 'Sim'
                     participant.giveresp = true;
-                case 'Nao'
+                case 'Não'
                     participant.giveresp = false;
             end 
             
@@ -73,22 +81,22 @@ col_tr = questdlg('', ...
             
             tr = questdlg('Dificuldade?', ...
                      '', ...
-                     'Facil', 'Normal','');
+                     'Fácil', 'Normal','');
             participant.exp = 2;
             switch tr
-                case 'Facil'
+                case 'Fácil'
                     participant.tr = true;
                     participant.tempo = 0.2;
                     participant.tempo2 = 0.5;
                     participant.tempo3 = 0.7;
                     participant.giveresp = false;
-                    participant.limiar = 30;
+                    participant.limiar = 40;
                 case 'Normal'
                     participant.tr = false;
                     participant.tempo = 0;
                     participant.tempo2 = 0;
                     participant.giveresp = true;
-                    participant.limiar = 30;
+                    participant.limiar = 40;
             end
             
             
@@ -97,7 +105,7 @@ col_tr = questdlg('', ...
             
              argindlg = inputdlg({...
             'Número do voluntário',...
-            'Sessao',...
+            'Sessão',...
             '1-up/(n)-down(1/2/3), Psi(4) or Pest(5)',...
             'Limiar'},...
             '',1);
@@ -125,18 +133,18 @@ col_tr = questdlg('', ...
             
             train_answer = questdlg('Coletar respostas?', ...
                 '', ...
-                'Sim', 'Nao','');
+                'Sim', 'Não','');
             switch train_answer
                 case 'Sim'
                     participant.giveresp = true;
-                case 'Nao'
+                case 'Não'
                     participant.giveresp = false;
             end 
             
             
             staircase = questdlg('Primeiro Staircase?', ...
                 '', ...
-                'Sim', 'Nao','');
+                'Sim', 'Não','');
             switch staircase
                 case 'Sim'
                     participant.limiar = str2double(argindlg{4});
@@ -144,7 +152,7 @@ col_tr = questdlg('', ...
                         participant.limiar = 15;
                     end
                     participant.step_size_down = 2.5;
-                case 'Nao'
+                case 'Não'
                     participant.step_size_down = 1;
                     participant.limiar = str2double(argindlg{4});
             end 
