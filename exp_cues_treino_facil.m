@@ -86,8 +86,8 @@ for q = 1:2
     for b = 1:6
         
         % 1 segundo apresenta��o placeholders, pf, noise/gabor
-        texL=Screen('MakeTexture',infos.win,noise(1,1).noiseimg,[],infos.flags);
-        texR=Screen('MakeTexture',infos.win,noise(1,2).noiseimg,[],infos.flags);
+        texL=Screen('MakeTexture',infos.win,noise(b,1).noiseimg,[],infos.flags);
+        texR=Screen('MakeTexture',infos.win,noise(b,2).noiseimg,[],infos.flags);
         
         % Pista central
         if q == 1

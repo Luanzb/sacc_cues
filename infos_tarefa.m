@@ -36,7 +36,7 @@ infos.screen_num           = 0;
 
 if participant.exp == 1
     infos.ntrials              = 960;
-    infos.pausas               = (48:48:912); % 3 pausas em uma sessão 
+    infos.pausas               = (48:48:912); % 19 pausas em uma sessão 
     infos.pausas2              = (49:48:913);% 
     
 else
@@ -522,7 +522,7 @@ SOA = infos.SOA(1:infos.ntrials,:);
 [disctexture] = disc(infos);
 
 if participant.exp == 1
-    [timestamps,Response,noise_gabor,fix]    = exp_cues(g,infos, aperture, disctexture, participant);
+    [timestamps,Response,noise_gabor,fix,targ]    = exp_cues(g,infos, aperture, disctexture, participant);
 else
     if participant.tr == false
         [Response,targ] = exp_cues_treino(g,infos, aperture, disctexture,participant);

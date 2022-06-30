@@ -1,4 +1,4 @@
-function [timestamps,Response, noise_gabor,fix] = exp_cues(g,infos, aperture, disctexture, participant)
+function [timestamps,Response, noise_gabor,fix,targ] = exp_cues(g,infos, aperture, disctexture, participant)
 
     FlushEvents;
     ListenChar(2);
@@ -87,31 +87,62 @@ function [timestamps,Response, noise_gabor,fix] = exp_cues(g,infos, aperture, di
 
 try
     
-
+     targ = zeros(960,1);
+     
 for q = 1:infos.ntrials
 
     fix = zeros(168,1);
+    %%
+    % 'infos.show_noise_gabor' matriz contendo zeros e uns. nos zeros os
+    % gabors s'ao apresentados, nos uns, os ruidos. Se entre o loop de inicio d
+    % apresentacao do alvo 'infos.SOA(q,1)' e final de apresentacao do alvo
+    % 'infos.SOA(q,4)' tiver o valor '1', seja uma, duas ou tres vezes,
+    % isso fara com q o alvo seja apresentado por menos tempo ou que ele
+    % nem seja apresentado (caso tenha apenas uns no vetor 'infos.show_noise_gabor'
+    % entre 'infos.SOA(q,1)' e 'infos.SOA(q,4)')
+    % Essa secao do c[odigo garante que o alvo em cada tentativa seja apresentado sempre por
+    % tres loops (totalizando 25 ms d apresentacao). 
     
-     
-    ble = 0;
-    blee = 0; 
-    
-    % define se ou em quantos flips (3 ao todo) o alvo cairia na vez de
-    % apresentacao do noise. variavel blee recebe esse valor
-    for vrau = 1:3
-        if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
-            blee = blee + 1;
-        end
-        ble = ble + 1;
-    end
+    % verifica se o primeiro loop em que o alvo sera apresentado cai no
+    % flip de ruido (1)
+    if infos.show_noise_gabor(infos.SOA(q,1)) == 1
+        ble = 0;
+        blee = 0; 
 
-    % 
+        % define se ou em quantos flips (3 ao todo) o alvo cairia na vez de
+        % apresentacao do noise. variavel blee recebe esse valor
+        for vrau = 1:3
+            if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
+                blee = blee + 1;
+            end
+            ble = ble + 1;
+        end
+
+    else
+       ble = 0;
+        blee = 0; 
+
+        % define se ou em quantos flips (3 ao todo) o alvo cairia na vez de
+        % apresentacao do noise. variavel blee recebe esse valor
+        for vrau = 1:3
+            if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
+                blee = blee + 1;
+            end
+            ble = ble + 1;
+        end
+        if blee == 1
+            blee = 5;
+        elseif blee == 2
+            blee = 4;
+        end
+    end
+    
+    
     noise_gabor = infos.show_noise_gabor(blee+1:infos.SOA(q,4)+blee);
     sub = 168 - (size(noise_gabor));
     noise_gabor(length(noise_gabor)+1:length(noise_gabor)+sub(1)) = 1;
     
-    blee2 = abs(blee - 1);
-         
+    %%         
     
     dotsize = repmat(infos.dotSize,infos.nrows,2);
     dotsize(infos.cue_onoff(q,1):infos.nrows,1) = infos.leftcuesize(q);
@@ -153,19 +184,19 @@ for q = 1:infos.ntrials
         
         if  infos.matrix(q,1) == 1
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ---------------- \n\n Pista PERIFERICA \n\n Condição de SACADA',...
+            sprintf('Bloco %i/20.\n\n ---------------- \n\n Pista PERIFERICA \n\n Condição de SACADA',...
             bloco2),'center', 'center', infos.black);   
         elseif infos.matrix(q,1) == 2
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ---------------- \n\n Pista PERIFERICA \n\n Condição de FIXACAO',...
+            sprintf('Bloco %i/20.\n\n ---------------- \n\n Pista PERIFERICA \n\n Condição de FIXACAO',...
             bloco2),'center', 'center', infos.black); 
         elseif infos.matrix(q,1) == 3
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ---------------- \n\n Pista CENTRAL \n\n Condição de SACADA',...
+            sprintf('Bloco %i/20.\n\n ---------------- \n\n Pista CENTRAL \n\n Condição de SACADA',...
             bloco2),'center', 'center', infos.black);   
         elseif infos.matrix(q,1) == 4
             DrawFormattedText(infos.win,...
-            sprintf('Bloco %i.\n\n ---------------- \n\n Pista CENTRAL \n\n Condição de FIXACAO',...
+            sprintf('Bloco %i/20.\n\n ---------------- \n\n Pista CENTRAL \n\n Condição de FIXACAO',...
             bloco2),'center', 'center', infos.black); 
         end
         
@@ -259,8 +290,8 @@ for q = 1:infos.ntrials
         now = GetSecs();   
              
         % 1 segundo apresenta��o placeholders, pf, noise/gabor
-        texL=Screen('MakeTexture',infos.win,noise(b + blee2,1).noiseimg,[],infos.flags);
-        texR=Screen('MakeTexture',infos.win,noise(b + blee2,2).noiseimg,[],infos.flags);
+        texL=Screen('MakeTexture',infos.win,noise(b,1).noiseimg,[],infos.flags);
+        texR=Screen('MakeTexture',infos.win,noise(b,2).noiseimg,[],infos.flags);
         
         
             % Pista central 
@@ -313,6 +344,7 @@ for q = 1:infos.ntrials
 %                 [], infos.coordR, [], 0,[],infos.grey);
             end
             
+            
         end
 
         
@@ -349,7 +381,13 @@ for q = 1:infos.ntrials
        
         Response(q,6) = Response(q,5) - Response(q,3); % SOA
         
-        
+          % verifica se o alvo foi apresentado no flip de gabor.
+            if orient(b,1) ~= 0
+                targ(q,1) = 1;
+            elseif orient(b,2) ~= 0
+                targ(q,1) = 1;
+            end
+
       
         if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao   
             if b >= infos.cue_onoff(q,1) && b <= infos.cue_onoff(q,2)

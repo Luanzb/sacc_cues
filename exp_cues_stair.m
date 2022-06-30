@@ -146,26 +146,45 @@ try
    targ = zeros(60,1);
     
 for q = 1:infos.ntrials
-     
+    
       
-    ble = 0;
-    blee = 0; 
-    
-    for vrau = 1:3
-        if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
-            blee = blee + 1;
-        end
-        ble = ble + 1;
-    end
+ if infos.show_noise_gabor(infos.SOA(q,1)) == 1
+        ble = 0;
+        blee = 0; 
 
-    
+        % define se ou em quantos flips (3 ao todo) o alvo cairia na vez de
+        % apresentacao do noise. variavel blee recebe esse valor
+        for vrau = 1:3
+            if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
+                blee = blee + 1;
+            end
+            ble = ble + 1;
+        end
+
+    else
+       ble = 0;
+       blee = 0; 
+
+        % define se ou em quantos flips (3 ao todo) o alvo cairia na vez de
+        % apresentacao do noise. variavel blee recebe esse valor
+        for vrau = 1:3
+            if infos.show_noise_gabor(infos.SOA(q,1) + ble) == 1
+                blee = blee + 1;
+            end
+            ble = ble + 1;
+        end
+        if blee == 1
+            blee = 5;
+        elseif blee == 2
+            blee = 4;
+        end
+ end
+ 
     noise_gabor = infos.show_noise_gabor(blee+1:infos.SOA(q,4)+blee);
     sub = 168 - (size(noise_gabor));
     noise_gabor(length(noise_gabor)+1:length(noise_gabor)+sub(1)) = 1;
     
-    blee2 = abs(blee - 1);
-         
-         
+    %%
     fp = repmat(WhiteIndex(infos.screenNumber),infos.nrows,1);
     
     % define stimuli in this trial
@@ -304,8 +323,8 @@ for q = 1:infos.ntrials
      
         now = GetSecs();   
                 
-        texL = Screen('MakeTexture',infos.win,noise(b + blee2,1).noiseimg,[],infos.flags);
-        texR = Screen('MakeTexture',infos.win,noise(b + blee2,2).noiseimg,[],infos.flags);
+        texL = Screen('MakeTexture',infos.win,noise(b,1).noiseimg,[],infos.flags);
+        texR = Screen('MakeTexture',infos.win,noise(b,2).noiseimg,[],infos.flags);
         
         
 %         if trls.curr_cue_loc(q) == 2 && trls.curr_side(q) == 1   % left side
@@ -344,20 +363,20 @@ for q = 1:infos.ntrials
                 Screen('DrawTextures', infos.win, texRR, [], infos.coordR,...
                 orient(b,2), 0,1,[],[],kPsychDontDoRotation, g(b).propertiesMat');
             
-            else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
-                
-                Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-                [],infos.filtmode,infos.galpha, [], []);
-                Screen('DrawTextures', infos.win,[aperture disctexture],...
-                [], infos.coordL, [], 0, [],infos.grey);
-
-                Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
-                infos.filtmode, infos.galpha, [], []);
-                Screen('DrawTextures', infos.win, [aperture disctexture],...
-                [], infos.coordR, [], 0,[],infos.grey);
-                
+%             else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
+%                 
+%                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+%                 Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
+%                 [],infos.filtmode,infos.galpha, [], []);
+%                 Screen('DrawTextures', infos.win,[aperture disctexture],...
+%                 [], infos.coordL, [], 0, [],infos.grey);
+% 
+%                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+%                 Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
+%                 infos.filtmode, infos.galpha, [], []);
+%                 Screen('DrawTextures', infos.win, [aperture disctexture],...
+%                 [], infos.coordR, [], 0,[],infos.grey);
+%                 
             end
             
             % verifica se o alvo foi apresentado no flip de gabor.
