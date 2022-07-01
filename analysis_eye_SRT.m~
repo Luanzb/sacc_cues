@@ -8,8 +8,8 @@ addpath(genpath('/usr/local/MATLAB/toolbox/edfmex/'))
 
 %% 
 data_folder = '/mnt/projetos/sacc_cues/';
-var = sprintf('data/Subject%i/eyetracking/%s.edf',participant.dnum,participant.filename);
-eyedf = edfmex(fullfile([data_folder var]));
+var = sprintf('data/Subject%s/eyetracking/%s.edf',participant.dnum,participant.filename);
+eyedf = edfmex(fullfile([data_folder 'data/Subject1/eyetracking/Sacc_sub1_ses3_20220511-1216.edf']));
 
 %% get event times
 

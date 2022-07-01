@@ -1,6 +1,6 @@
 
 sca; close all; clear all; clc;
-PsychDefaultSetup(2);
+PsychDefaultSetup(2); 
   
 addpath(genpath('/mnt/projetos/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
@@ -159,10 +159,10 @@ mat2 = [...
    %                  esq = 1       45 = 1
    % perifcovert = 2  dir = 2       315 = 2
  
-          2             1             1            
-          2             1             2            
-          2             2             1           
-          2             2             2                                           
+          1             1             1            
+          1             1             2            
+          1             2             1           
+          1             2             2                                           
 ];
 
 mat3 = [... 
@@ -181,10 +181,10 @@ mat4 = [...
    %                  esq = 1       45 = 1
    % centralcovert = 4  dir = 2       315 = 2
    
-          4             1             1                       
-          4             1             2                    
-          4             2             1                         
-          4             2             2                                   
+          3             1             1                       
+          3             1             2                    
+          3             2             1                         
+          3             2             2                                   
 ];
 
 
@@ -539,7 +539,11 @@ if participant.exp == 1 % Coleta de dados no exp
     save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
         [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix', 'SOA');
 
-
+    
+    if participant.coleta == 1
+        [subject_mean] = analysis_eye_SRT(participant);
+        mean_SRT = subject_mean
+    end
 
        if exist(participant.eyefilename,'file')
              movefile(participant.eyefilename,sprintf('/mnt/projetos/sacc_cues/data/Subject%s/eyetracking/%s.edf',participant.strnum,participant.filename));
@@ -549,6 +553,8 @@ if participant.exp == 1 % Coleta de dados no exp
 
     disp('All done!');
     
+    
 end
 
+ 
 

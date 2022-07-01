@@ -112,7 +112,6 @@ col_tr = questdlg('', ...
             '',1);
 
             participant = struct;
-            participant.coleta = 0;
             participant.strnum = argindlg{1}; %salva str
             if isempty(participant.strnum)
                 participant.strnum = '0';
