@@ -171,10 +171,10 @@ for q = 1:infos.ntrials
     
      if q == 1 || any(infos.pausas2 == q)
               
-        text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecerá a seguir ENQUANTO aperta a tecla dourada (A)';
+        text = 'Pisque e olhe para o ponto no centro do circulo \n\n que aparecerá a seguir ENQUANTO aperta a tecla A';
         DrawFormattedText(infos.win, text, 'center', 'center', [0,0,0]);
         Screen('Flip', infos.win);
-        WaitSecs(3);
+        WaitSecs(4.5);
 
         EyelinkDoDriftCorrection(el, [infos.xcenter, infos.ycenter]);      % Run eyetracker drift correction
         WaitSecs(1);
@@ -523,7 +523,7 @@ for q = 1:infos.ntrials
         bloco = bloco + 1;
         
         DrawFormattedText(infos.win,...
-        sprintf('%iº bloco completo.\n\n Pressione o botão amarelo para continuar',...
+        sprintf('%iº bloco completo.\n\n Hora do café/descanso (se quiser!) \n\n --- Pressione o botão amarelo para continuar ---',...
         bloco),'center', 'center', infos.black);   
         
         Screen('Flip', infos.win);
@@ -558,7 +558,7 @@ for q = 1:infos.ntrials
 end
 
 
-    DrawFormattedText(infos.win,sprintf('Voce completou todos os blocos da sessão. \n\n Parabéns!')...
+    DrawFormattedText(infos.win,sprintf('Você completou todos os blocos da sessão. \n\n Parabéns!')...
         ,'center', 'center', infos.black);
     Screen('Flip', infos.win);
 

@@ -159,10 +159,10 @@ mat2 = [...
    %                  esq = 1       45 = 1
    % perifcovert = 2  dir = 2       315 = 2
  
-          1             1             1            
-          1             1             2            
-          1             2             1           
-          1             2             2                                           
+          2             1             1            
+          2             1             2            
+          2             2             1           
+          2             2             2                                           
 ];
 
 mat3 = [... 
@@ -181,10 +181,10 @@ mat4 = [...
    %                  esq = 1       45 = 1
    % centralcovert = 4  dir = 2       315 = 2
    
-          3             1             1                       
-          3             1             2                    
-          3             2             1                         
-          3             2             2                                   
+          4             1             1                       
+          4             1             2                    
+          4             2             1                         
+          4             2             2                                   
 ];
 
 
@@ -274,7 +274,7 @@ if infos.refreshR== 120
             tg_onset     = 90:3:141;       % define em q loops o alvo será apresentado 
             ordem        = randi(16,infos.ntrials,1);% cria 960 val. aleató. entre 16-1.  
                                                      % SOA + longo: 150 (+ 25 alvo)
-        elseif participant.median >= 150 && participant.median < 175 
+        elseif participant.median >= 140 && participant.median < 175 
 
              tg_onset     = 90:3:138;       % define em q loops o alvo será apresentado 
             ordem        = randi(13,infos.ntrials,1);% cria 960 val. aleató. entre 13-1.  

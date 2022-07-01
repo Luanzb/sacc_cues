@@ -410,7 +410,7 @@ for q = 1:infos.ntrials
         bloco = bloco + 1;
         
         DrawFormattedText(infos.win,...
-        sprintf('%iº bloco completo.\n\n Pressione o botão amarelo para continuar',...
+        sprintf('%iº bloco completo.\n\n Hora do café/descanso (se quiser!) \n\n --- Pressione o botão amarelo para continuar ---',...
         bloco),'center', 'center', infos.black);   
         
         Screen('Flip', infos.win);
@@ -446,7 +446,7 @@ for q = 1:infos.ntrials
 end
 
 
-    DrawFormattedText(infos.win,sprintf('Voce completou todos os blocos da sessão. \n\n Parabéns!')...
+    DrawFormattedText(infos.win,sprintf('Você completou todos os blocos da sessão. \n\n Parabéns!')...
         ,'center', 'center', infos.black);
     Screen('Flip', infos.win);
 

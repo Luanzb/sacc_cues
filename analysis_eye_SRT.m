@@ -11,6 +11,12 @@ data_folder = '/mnt/projetos/sacc_cues/';
 var = sprintf('data/Subject%i/eyetracking/%s.edf',participant.dnum,participant.filename);
 eyedf = edfmex(fullfile([data_folder var]));
 
+if participant.eye == 'D'
+    eye = 2;
+else
+    eye = 1;
+end
+
 %% get event times
 
 eyedat = [];
@@ -44,10 +50,10 @@ epoch_size = [-50 210];
 
 for l=1:size(s.eyemat,2)
     
-    tt=   find(eyedf.FSAMPLE.time==s.eyemat(2,l)); % relative array onset
-    s.eyeraw(l,1,:)=(eyedf.FSAMPLE.gx(2,tt-abs(epoch_size(1)): tt+epoch_size(2))-1920/2)/ppd;
-    s.eyeraw(l,2,:)=(eyedf.FSAMPLE.gy(2,tt-abs(epoch_size(1)): tt+epoch_size(2))-1080/2)/ppd;
-    s.eyeraw(l,3,:)=eyedf.FSAMPLE.pa(2,tt-abs(epoch_size(1)): tt+epoch_size(2));
+    tt=   find(eyedf.FSAMPLE.time==s.eyemat(eye,l)); % relative array onset
+    s.eyeraw(l,1,:)=(eyedf.FSAMPLE.gx(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1920/2)/ppd;
+    s.eyeraw(l,2,:)=(eyedf.FSAMPLE.gy(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1080/2)/ppd;
+    s.eyeraw(l,3,:)=eyedf.FSAMPLE.pa(eye,tt-abs(epoch_size(1)): tt+epoch_size(2));
 
 end
 
@@ -132,13 +138,6 @@ s.macrosacvec = [macrosacvec1];
 
 
 %%
-
-
-load Sacc_sub1_ses3_20220511-1216.mat
-
-
-%% TENTATIVAS VÁLIDAS - relativo ao saccade onset
-
 
 s.macrosacvec(isnan(s.macrosacvec(:,:)))=0; %NANs recebem valor 0.
 lat_sac = s.macrosacvec(:,1)/1000; % latencia das sacadas transformada para ms
