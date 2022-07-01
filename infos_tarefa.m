@@ -539,12 +539,6 @@ if participant.exp == 1 % Coleta de dados no exp
     save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strnum),...
         [participant.filename,'.mat']),'participant','Response','timestamps', 'matrix', 'SOA');
 
-    
-    if participant.coleta == 1
-        [subject_mean] = analysis_eye_SRT(participant);
-        mean_SRT = subject_mean
-    end
-
        if exist(participant.eyefilename,'file')
              movefile(participant.eyefilename,sprintf('/mnt/projetos/sacc_cues/data/Subject%s/eyetracking/%s.edf',participant.strnum,participant.filename));
        else
@@ -552,6 +546,12 @@ if participant.exp == 1 % Coleta de dados no exp
        end
 
     disp('All done!');
+    
+    
+    if participant.coleta == 1
+        [subject_mean] = analysis_eye_SRT(participant);
+        mean_SRT = subject_mean
+    end
     
     
 end

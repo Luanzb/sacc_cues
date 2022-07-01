@@ -1,8 +1,8 @@
 
 function [subject_mean] = analysis_eye_SRT(participant)
-clear all
-
-close all
+% clear all
+% 
+% close all
 addpath /usr/local/MATLAB/toolbox/saccade_detection/
 addpath(genpath('/usr/local/MATLAB/toolbox/edfmex/'))
 
@@ -84,9 +84,9 @@ s.chans = {'Eye X','Eye Y','Eye Pupil'};
 %  sac(1:num,7)   vertical amplitude       (dY)
 %  sac(1:num,8)   saccade magnitude        ()
 % clear 
-
-close all
-clc
+% 
+% close all
+% clc
 
 
 MINDUR = 8;        % Minimum duration (number of samples)
