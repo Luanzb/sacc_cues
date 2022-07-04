@@ -234,3 +234,5 @@ save(fullfile(sprintf('/mnt/projetos/sacc_cues/data/Subject%s/',participant.strn
    end
         
 disp('All done!');
+
+analysis_stair(participant,AM);

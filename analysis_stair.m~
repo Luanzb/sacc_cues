@@ -2,7 +2,7 @@
 
 
 
-function analysis_stair(participant,AM)
+function analysis_stair(participant)
 %% staircases info
 
 condition = 1;

@@ -1,7 +1,7 @@
 
 sca; close all; clear all; clc;
 PsychDefaultSetup(2); 
-  
+   
 addpath(genpath('/mnt/projetos/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/MATLAB/'))   
@@ -38,6 +38,8 @@ if participant.exp == 1
     infos.ntrials              = 960;
     infos.pausas               = (48:48:912); % 19 pausas em uma sessão 
     infos.pausas2              = (49:48:913);% 
+    infos.ord                  = 5; 
+    infos.ord2                 = 20;
     
 else
     
@@ -45,8 +47,12 @@ else
         infos.ntrials              = 48; %48 % n�mero de tentativas
         infos.pausas               = (12:12:36); % 3 pausas em uma sessão 
         infos.pausas2              = (13:12:37);% 
+        infos.ord                  = 1; 
+        infos.ord2                 = 4;
     else
-        infos.ntrials              = 2;    
+        infos.ntrials              = 2;   
+        infos.ord                  = 1;
+        infos.ord2                  = 4;
     end
     
 end
@@ -159,10 +165,10 @@ mat2 = [...
    %                  esq = 1       45 = 1
    % perifcovert = 2  dir = 2       315 = 2
  
-          1             1             1            
-          1             1             2            
-          1             2             1           
-          1             2             2                                           
+          2             1             1            
+          2             1             2            
+          2             2             1           
+          2             2             2                                           
 ];
 
 mat3 = [... 
@@ -181,10 +187,10 @@ mat4 = [...
    %                  esq = 1       45 = 1
    % centralcovert = 4  dir = 2       315 = 2
    
-          3             1             1                       
-          3             1             2                    
-          3             2             1                         
-          3             2             2                                   
+          4             1             1                       
+          4             1             2                    
+          4             2             1                         
+          4             2             2                                   
 ];
 
 
@@ -213,7 +219,7 @@ mat4          =[mat4;repmat(mat4,rows,1)];
 matrix4 = mat4(randperm(size(mat4,1)),:); % aleatoriza as linhas
 
 ordem = [1 2 3 4];
-ordem_blocos1 = repelem(ordem,5)';
+ordem_blocos1 = repelem(ordem,infos.ord)';
 ordem_blocos = ordem_blocos1(randperm(size(ordem_blocos1,1)),:);
 
 
@@ -222,7 +228,7 @@ linhaa = ll;
 
 infos.matrix = zeros(lk,3); 
 
-for blocos = 1:20
+for blocos = 1:infos.ord2
     
         
         if     ordem_blocos(blocos) == 1
@@ -231,7 +237,7 @@ for blocos = 1:20
                 infos.matrix(linha:linhaa,:) = matrix2;
         elseif ordem_blocos(blocos) == 3
                 infos.matrix(linha:linhaa,:) = matrix3;        
-        else
+        elseif ordem_blocos(blocos) == 4
                 infos.matrix(linha:linhaa,:) = matrix4;    
         end
   

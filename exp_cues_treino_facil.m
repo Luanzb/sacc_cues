@@ -72,7 +72,7 @@ for q = 1:2
     Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('Flip', infos.win);
-    WaitSecs(0.5)
+    WaitSecs(0.5);
     
     clear buttons
     [~,~,buttons]=GetMouse;
@@ -124,7 +124,7 @@ for q = 1:2
         Screen('DrawDots', infos.win, infos.pholdercoordR, dotsize(5,2),...
             infos.pholdercolor, [], 2, 1);
         Screen('Flip', infos.win,[]);
-        WaitSecs(0.5)
+        WaitSecs(0.5);
         
         clear buttons
         [~,~,buttons]=GetMouse;
@@ -196,7 +196,7 @@ for q = 1:2
     Screen('DrawDots',infos.win,infos.pholdercoordL,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('DrawDots',infos.win,infos.pholdercoordR,infos.dotSize,infos.pholdercolor,[],2,1);
     Screen('Flip', infos.win);
-    WaitSecs(0.5)
+    WaitSecs(0.5);
     
     clear buttons
     [~,~,buttons]=GetMouse;

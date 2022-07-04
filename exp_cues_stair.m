@@ -255,34 +255,35 @@ try
             WaitSecs(1);
         end
         
-        DrawFormattedText(infos.win,...
-            sprintf('Bloco único.\n\n ---------------- \n\n Pista PERIFÉRICA \n\n Condição de FIXAÇÃO')...
-            ,'center', 'center', infos.black);
-        
-        
-        Screen('Flip', infos.win);
-        
-        
-        % Wait for button press
-        ResponsePixx('StartNow', 1, [0 1 0 0 0], 1);
-        while 1
-            [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
-            if ~isempty(buttonStates)
-                if buttonStates(1,2) == 1 % yellow button
-                    break;
-                elseif buttonStates(1,4) == 1 % blue button | sai do exp
-                    abort = true;
-                    break
+        if q == 1
+            DrawFormattedText(infos.win,...
+                sprintf('Bloco único.\n\n ---------------- \n\n Pista PERIFÉRICA \n\n Condição de FIXAÇÃO')...
+                ,'center', 'center', infos.black);
+
+
+            Screen('Flip', infos.win);
+
+
+            % Wait for button press
+            ResponsePixx('StartNow', 1, [0 1 0 0 0], 1);
+            while 1
+                [buttonStates, ~, ~] = ResponsePixx('GetLoggedResponses', 1, 1, 2000);
+                if ~isempty(buttonStates)
+                    if buttonStates(1,2) == 1 % yellow button
+                        break;
+                    elseif buttonStates(1,4) == 1 % blue button | sai do exp
+                        abort = true;
+                        break
+                    end
                 end
             end
+            ResponsePixx('StopNow', 1, [0 0 0 0 0], 0);
+
+            if abort == true
+                break;
+            end
+        
         end
-        ResponsePixx('StopNow', 1, [0 0 0 0 0], 0);
-        
-        if abort == true
-            break;
-        end
-        
-        
         Eyelink('Command', 'clear_screen 0'); % Clear Host PC display from any previus drawing
         Eyelink('ImageTransfer', '/mnt/projetos/fovea/images/placeholders.bmp', 0, 0, 0, 0, 0, 0);
         Eyelink('StartRecording');
