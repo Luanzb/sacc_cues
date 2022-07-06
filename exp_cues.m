@@ -285,8 +285,18 @@ for q = 1:infos.ntrials
     Eyelink('Message', sprintf('array_on_%1d', q));       
     Eyelink('Command', 'record_status_message "TRIAL %d', q);
     
+    
+    texLL = g.gabortex; texRR = g.gabortex;
+    
     ResponsePixx('StartNow', 1, [1 0 1 0 0], 1);
     for b = 1:infos.loops
+        
+        if CheckKeyPress(KbName('e'))
+            abort = true;
+            break;
+        end
+        
+        
         now = GetSecs();   
              
         % 1 segundo apresenta��o placeholders, pf, noise/gabor
@@ -297,9 +307,11 @@ for q = 1:infos.ntrials
             % Pista central 
         if infos.matrix(q,1) == 3 || infos.matrix(q,1) == 4
             if infos.matrix(q,2) == 1
+                Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
                 ,infos.xcenter - 26,infos.ycenter, 4);
             else
+                Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                  Screen('DrawLine', infos.win, centralcue(b), infos.xcenter,infos.ycenter ...
                 ,infos.xcenter + 26,infos.ycenter, 4);
             end
@@ -307,28 +319,34 @@ for q = 1:infos.ntrials
         
         
         if noise_gabor(b) == 1
-
+            
             Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-            Screen('DrawTextures', infos.win, texL, [],infos.coordL,...
-            [],infos.filtmode,infos.galpha, [], []);
+            Screen('DrawTextures', infos.win, texL, [], infos.coordL,...
+            [], infos.filtmode,infos.galpha);
             Screen('DrawTextures', infos.win,[aperture disctexture],...
-            [], infos.coordL, [], 0, [],infos.grey);
+            [], infos.coordL, [], [], [], infos.grey);
 
             Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            Screen('DrawTextures', infos.win, texR, [], infos.coordR, [],...
-            infos.filtmode, infos.galpha, [], []);
+            Screen('DrawTextures', infos.win, texR, [], infos.coordR,...
+            [], infos.filtmode, infos.galpha);
             Screen('DrawTextures', infos.win, [aperture disctexture],...
-            [], infos.coordR, [], 0,[],infos.grey);
+            [], infos.coordR, [], [], [], infos.grey);
                  
         else 
+                    
             if b <= infos.SOA(q,4)
-               texLL = g.gabortex; texRR = g.gabortex;
+                
+%                 texLL = g.gabortex; texRR = g.gabortex;
                 Screen('BlendFunction', infos.win, 'GL_ONE', 'GL_ZERO');
                 Screen('DrawTextures', infos.win, texLL, [], infos.coordL,...
-                orient(b,1),0,1,[],[], kPsychDontDoRotation, g(b).propertiesMat');
+                orient(b,1), 0, 1, [], [], kPsychDontDoRotation, g(b).propertiesMat');
                 Screen('DrawTextures', infos.win, texRR, [], infos.coordR,...
-                orient(b,2), 0,1,[],[],kPsychDontDoRotation, g(b).propertiesMat');
+                orient(b,2), 0, 1, [], [], kPsychDontDoRotation, g(b).propertiesMat');
             
+            % Screen('DrawTexture', windowPointer, texturePointer [,sourceRect] [,destinationRect]...
+            % [,rotationAngle] [, filterMode] [, globalAlpha] [, modulateColor] [, textureShader] [, specialFlags] [, auxParameters]);
+
+
 %             else % apos a aprsentacao do alvo, apenas os noises continuam sendo apresentados
 %                 
 %                 Screen('BlendFunction', infos.win, GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -418,7 +436,9 @@ for q = 1:infos.ntrials
                 end
             end
         end
-       
+        
+        clear texL texR
+
     end
     
     
@@ -456,7 +476,7 @@ for q = 1:infos.ntrials
     
 
     % Desenha os placeholders e pf na tela
-   
+    Screen('BlendFunction', infos.win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if infos.matrix(q,1) == 2 || infos.matrix(q,1) == 4 % condição de fixacao
         Screen('DrawDots',infos.win,infos.fpointcoord,infos.dotSize2,infos.black,[],2,1);
         if sum(fix(:,1)) <13
@@ -492,9 +512,9 @@ for q = 1:infos.ntrials
                 elseif buttonStates(1,3) == 1 % green button
                     Response(q,1) = 1; % sentido anti-horario
                     break;
-                elseif buttonStates(1,4) == 1 % blue button | sai do exp
-                    abort = true;
-                    break
+%                 elseif buttonStates(1,4) == 1 % blue button | sai do exp
+%                     abort = true;
+%                     break
                 end
             end
         end
@@ -502,9 +522,9 @@ for q = 1:infos.ntrials
         
     end
     
-        if abort == true
-            break;
-        end
+%         if abort == true
+%             break;
+%         end
   
     
 
@@ -546,13 +566,14 @@ for q = 1:infos.ntrials
                 
      end    
     
-    
-    clear Textures
-    
+        
     
     if abort == true
         break;
     end
+    
+   clear Textures
+   clear texL texR
     
     
 end

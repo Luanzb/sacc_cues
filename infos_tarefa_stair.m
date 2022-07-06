@@ -1,4 +1,4 @@
-sca; close all; clear;
+sca; clc; close all; clear;
 PsychDefaultSetup(2);
 
 % cd /mnt/projetos/

@@ -1,13 +1,13 @@
-
 sca; close all; clear all; clc;
 PsychDefaultSetup(2); 
    
 addpath(genpath('/mnt/projetos/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/MATLAB/'))   
-%cd /home/activis/Documents/GitHub/sacc_cues/
+% cd /home/activis/Documents/GitHub/sacc_cues/   
 
-infos = struct;
+infos = struct;   
+
 
 [participant] = inputsubject;
 
@@ -46,7 +46,7 @@ else
     if participant.tr == false
         infos.ntrials              = 48; %48 % n�mero de tentativas
         infos.pausas               = (12:12:36); % 3 pausas em uma sessão 
-        infos.pausas2              = (13:12:37);% 
+        infos.pausas2                = (13:12:37);% 
         infos.ord                  = 1; 
         infos.ord2                 = 4;
     else
@@ -57,7 +57,7 @@ else
     
 end
 
-
+                                                                                                                                                       
 infos.time                 = [0.025  0.5  1  0  0.0167]; 
 infos.fix_dur_t            = 0.5;  % Duration of fixation at ROI to start trial in secs
 infos.screenNumber         = max(Screen('Screens'));
@@ -282,7 +282,7 @@ if infos.refreshR== 120
                                                      % SOA + longo: 150 (+ 25 alvo)
         elseif participant.median >= 140 && participant.median < 175 
 
-             tg_onset     = 90:3:138;       % define em q loops o alvo será apresentado 
+            tg_onset     = 90:3:138;       % define em q loops o alvo será apresentado 
             ordem        = randi(13,infos.ntrials,1);% cria 960 val. aleató. entre 13-1.  
                                                      % SOA + longo: 125 (+ 25 alvo)
         end
@@ -293,6 +293,7 @@ if infos.refreshR== 120
         ordem        = randi(19,infos.ntrials,1);% cria 960 val. aleató. entre 19-1.
                                                  % SOA + longo: 175 (+ 25 alvo)
     end
+
     
     SOAs         = zeros(infos.ntrials,1);   % vetor que sera preenchido abaixo
     offset_target = zeros(infos.ntrials,1);
