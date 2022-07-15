@@ -16,6 +16,14 @@ Eyelink('Command', 'link_event_filter = LEFT,RIGHT,FIXATION,SACCADE,BLINK,BUTTON
 Eyelink('Command', 'file_sample_data = LEFT,RIGHT,GAZE,HREF,RAW,AREA,HTARGET,GAZERES,BUTTON,STATUS,INPUT');
 Eyelink('Command', 'link_sample_data = LEFT,RIGHT,GAZE,GAZERES,AREA,HTARGET,STATUS,INPUT');
 
+   if participant.eye == 'D'
+        eye_used = 2;
+        Eyelink('Command', 'active_eye = RIGHT');
+    elseif participant.eye == 'E'
+         eye_used = 1;
+        Eyelink('Command', 'active_eye = LEFT');
+    end
+    
 el = EyelinkInitDefaults(infos.win);
 
 % Set calibration/validation/drift-check(or drift-correct) size as well as background and target colors
@@ -142,6 +150,7 @@ elseif participant.method == 5  % pest
 end
 
 try
+    
     
     targ = zeros(60,1);
     
@@ -289,11 +298,11 @@ try
         Eyelink('StartRecording');
         Eyelink('Command', 'record_status_message "TRIAL %d/%d"', q, infos.ntrials);
         
-        eye_used = Eyelink('EyeAvailable');
-        % Get events from right eye if binocular
-        if eye_used == 2
-            eye_used = 1;
-        end
+%         eye_used = Eyelink('EyeAvailable');
+%         % Get events from right eye if binocular
+%         if eye_used == 2
+%             eye_used = 1;
+%         end
         
         tic;
         % Desenha os placeholders e pf na tela por 500 ms
@@ -316,8 +325,8 @@ try
                 % get the sample in the form of an event structure
                 evt = Eyelink('NewestFloatSample');
                 % if we do, get current gaze position from sample
-                x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-                y_gaze = evt.gy(eye_used+1);
+                x_gaze = evt.gx(eye_used); % +1 as we're accessing MATLAB array
+                y_gaze = evt.gy(eye_used);
                 if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
                     if (GetSecs - timestamps.fix_on(q)) >= infos.fix_dur_t % If gaze duration >= minimum fixation window time (fxateTime)
                         

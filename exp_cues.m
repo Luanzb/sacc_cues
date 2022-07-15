@@ -17,6 +17,14 @@ function [timestamps,Response, noise_gabor,fix,targ] = exp_cues(g,infos, apertur
     Eyelink('Command', 'file_sample_data = LEFT,RIGHT,GAZE,HREF,RAW,AREA,HTARGET,GAZERES,BUTTON,STATUS,INPUT');
     Eyelink('Command', 'link_sample_data = LEFT,RIGHT,GAZE,GAZERES,AREA,HTARGET,STATUS,INPUT');
     
+    if participant.eye == 'D'
+        eye_used = 2;
+        Eyelink('Command', 'active_eye = RIGHT');
+    elseif participant.eye == 'E'
+        eye_used = 1;
+        Eyelink('Command', 'active_eye = LEFT');
+    end
+    
     el = EyelinkInitDefaults(infos.win);
 
     % Set calibration/validation/drift-check(or drift-correct) size as well as background and target colors
@@ -83,8 +91,8 @@ function [timestamps,Response, noise_gabor,fix,targ] = exp_cues(g,infos, apertur
     bloco = 0;
     bloco2 = 0;
     abort = false;
-
-
+    
+  
 try
     
      targ = zeros(960,1);
@@ -230,11 +238,11 @@ for q = 1:infos.ntrials
      Eyelink('StartRecording');
      Eyelink('Command', 'record_status_message "TRIAL %d/%d"', q, infos.ntrials);
 
-     eye_used = Eyelink('EyeAvailable');
-     % Get events from right eye if binocular
-     if eye_used == 2
-        eye_used = 1;
-     end 
+%      eye_used = Eyelink('EyeAvailable');
+%      % Get events from right eye if binocular
+%      if eye_used == 2
+%         eye_used = 1;
+%      end 
      %%
       
      
@@ -249,6 +257,8 @@ for q = 1:infos.ntrials
     
     
     %%
+    
+    
     % Wait until participant is fixating for infos.fix_dur_t
     while 1
         damn = Eyelink('CheckRecording');
@@ -262,8 +272,8 @@ for q = 1:infos.ntrials
             % get the sample in the form of an event structure
             evt = Eyelink('NewestFloatSample');
             % if we do, get current gaze position from sample
-            x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-            y_gaze = evt.gy(eye_used+1);
+            x_gaze = evt.gx(eye_used); % +1 as we're accessing MATLAB array
+            y_gaze = evt.gy(eye_used);
             if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
                 if (GetSecs - timestamps.fix_on(q)) >= infos.fix_dur_t % If gaze duration >= minimum fixation window time (fxateTime)
                     
@@ -421,8 +431,8 @@ for q = 1:infos.ntrials
                         % get the sample in the form of an event structure
                         evt = Eyelink('NewestFloatSample');
                         % if we do, get current gaze position from sample
-                        x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-                        y_gaze = evt.gy(eye_used+1);
+                        x_gaze = evt.gx(eye_used); % +1 as we're accessing MATLAB array
+                        y_gaze = evt.gy(eye_used);
 
                         if inFixWindow(x_gaze,y_gaze,fix_window_center) % If gaze sample is within fixation window (see inFixWindow function below)
                             fix(b,1) = 1;
@@ -455,6 +465,8 @@ for q = 1:infos.ntrials
             
        
             while 1
+                
+                    
                 damn = Eyelink('CheckRecording');
                 if(damn ~= 0)
                     break;
@@ -464,8 +476,8 @@ for q = 1:infos.ntrials
                     % get the sample in the form of an event structure
                     evt = Eyelink('NewestFloatSample');
                     % if we do, get current gaze position from sample
-                    x_gaze = evt.gx(eye_used+1); % +1 as we're accessing MATLAB array
-                    y_gaze = evt.gy(eye_used+1);
+                    x_gaze = evt.gx(eye_used); % +1 as we're accessing MATLAB array
+                    y_gaze = evt.gy(eye_used);
                     if inFixWindow(x_gaze,y_gaze,fix_window_targ) % If gaze sample is within fixation window (see inFixWindow function below)
                         break; % break while loop to show stimulus
                     end

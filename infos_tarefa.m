@@ -1,6 +1,6 @@
 sca; close all; clear all; clc;
 PsychDefaultSetup(2); 
-   
+
 addpath(genpath('/mnt/projetos/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/GitHub/sacc_cues/'))   
 addpath(genpath('/home/activis/Documents/MATLAB/'))   
