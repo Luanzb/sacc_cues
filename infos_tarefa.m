@@ -1,4 +1,4 @@
-sca; close all; clear all; clc;
+close all; clear all; clc;
 PsychDefaultSetup(2); 
 
 addpath(genpath('/mnt/projetos/sacc_cues/'))   

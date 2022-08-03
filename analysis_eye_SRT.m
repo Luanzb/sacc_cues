@@ -7,9 +7,9 @@ addpath /usr/local/MATLAB/toolbox/saccade_detection/
 addpath(genpath('/usr/local/MATLAB/toolbox/edfmex/'))
 
 %% 
-data_folder = '/mnt/projetos/sacc_cues/';
+    data_folder = '/mnt/projetos/sacc_cues/';
 
-% var = sprintf('data/Subject6/eyetracking/Sacc_sub6_ses3_20220715-1232.edf');
+ var = sprintf('data/Subject9/eyetracking/Sacc_sub9_ses5_20220720-1541.edf');
  var = sprintf('data/Subject%i/eyetracking/%s.edf',participant.dnum,participant.filename);
 
 eyedf = edfmex(fullfile([data_folder var]));
@@ -46,13 +46,12 @@ s.eyeraw = [];
 min_rt = 0;
 max_rt = 300;
 epoch_size = [min_rt max_rt];
-% epoch_size = [-50 210];
 
 for l=1:size(s.eyemat,2)
     
     %%%%%%%%%%%
     tt=find(eyedf.FSAMPLE.time==s.eyemat(2,l));   % begin time at cue onset
-%     tt=find(eyedf.FSAMPLE.time==s.eyemat(eye,l));
+    %tt=find(eyedf.FSAMPLE.time==s.eyemat(eye,l));
     
     s.eyeraw(l,1,:)=(eyedf.FSAMPLE.gx(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1920/2)/ppd;
     s.eyeraw(l,2,:)=(eyedf.FSAMPLE.gy(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1080/2)/ppd;
