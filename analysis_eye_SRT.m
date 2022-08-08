@@ -51,7 +51,6 @@ for l=1:size(s.eyemat,2)
     
     %%%%%%%%%%%
     tt=find(eyedf.FSAMPLE.time==s.eyemat(2,l));   % begin time at cue onset
-    %tt=find(eyedf.FSAMPLE.time==s.eyemat(eye,l));
     
     s.eyeraw(l,1,:)=(eyedf.FSAMPLE.gx(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1920/2)/ppd;
     s.eyeraw(l,2,:)=(eyedf.FSAMPLE.gy(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1080/2)/ppd;
