@@ -56,6 +56,8 @@ for l=1:size(s.eyemat,2)
     s.eyeraw(l,2,:)=(eyedf.FSAMPLE.gy(eye,tt-abs(epoch_size(1)): tt+epoch_size(2))-1080/2)/ppd;
     s.eyeraw(l,3,:)=eyedf.FSAMPLE.pa(eye,tt-abs(epoch_size(1)): tt+epoch_size(2));
 
+    %%% amplitude
+    s.eyeraw(l,4,:) = sqrt(s.eyeraw(l,1,:).^2 + s.eyeraw(l,2,:).^2);
 end
 
 % s.eyeraw(s.eyeraw(:,1:2,:)>100)=nan;
@@ -68,6 +70,8 @@ s.F = eyedf.RECORDINGS(1).sample_rate;
 s.time = epoch_size(1):1000/s.F:epoch_size(2);
 s.chans = {'Eye X','Eye Y','Eye Pupil'};
 
+%%% create vector to receive rejected trials
+s.badtrls = [];
 
 %% do saccade detection
 
